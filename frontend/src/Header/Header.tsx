@@ -11,7 +11,7 @@ function Header() {
             <div className='text-2xl font-semibold'>Hustlr</div>
             
         </div>
-        {NavLinks()}
+        <NavLinks/>
         <div className='flex gap-8 items-center justify-between mr-6'>
           
             <div className='flex items-center gap-2 '>
