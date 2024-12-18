@@ -33,7 +33,7 @@ function DreamJob() {
                   <div className='absolute left-9 w-fit top-[30%] border-bright-sun-400 border rounded-lg p-2 backdrop-blur-md gap-3 flex flex-col'>
                     <div className='flex gap-2 items-center mb-2'>
                       <div className='w-10 h-10 p-1 bg-mine-shaft-900 rounded-lg'> 
-                        <img src="/Google.png" alt="" />
+                        <img src="/Google1.png" alt="" />
                       </div>
                       <div className='text-sm text-mine-shaft-200'>
                         <div>Software Engineer</div>
