@@ -24,7 +24,7 @@ const Testimonials = () => {
             <div className="w-full border-t border-b px-5 py-16 md:py-24 border-mine-shaft-700">
                 <div className="w-full max-w-6xl mx-auto">
                     <div className="text-center max-w-xl mx-auto">
-                        <h1 className="text-6xl md:text-7xl font-bold mb-5 text-bright-sun-400">What people <br />are saying.</h1>
+                        <h1 className="text-6xl md:text-5xl font-bold mb-5 text-bright-sun-400">What people <br />are saying.</h1>
                         <h3 className="text-xl mb-5 font-light text-bright-sun-400">Lorem ipsum dolor sit amet consectetur adipisicing elit.</h3>
                         <div className="text-center mb-10">
                             <hr/><hr /><hr />
@@ -43,7 +43,7 @@ const Testimonials = () => {
                                         </div>
                                     </div>
                                     <div className="w-full">
-                                        <p className="text-sm leading-tight">
+                                        <p className="text-sm ">
                                             <span className="text-lg leading-none italic font-bold text-bright-sun-100 mr-1">"</span>
                                             {testimonial.text}
                                             <span className="text-lg leading-none italic font-bold text-bright-sun-100 ml-1">"</span>
@@ -55,13 +55,7 @@ const Testimonials = () => {
                     </div>
                 </div>
             </div>
-            <div className="flex items-end justify-end fixed bottom-0 right-0 mb-4 mr-4 z-10">
-                <div>
-                    <a title="Buy me a beer" href="https://www.buymeacoffee.com/scottwindon" target="_blank" rel="noopener noreferrer" className="block w-16 h-16 rounded-full transition-all shadow hover:shadow-lg transform hover:scale-110 hover:rotate-12">
-                        <img className="object-cover object-center w-full h-full rounded-full" src="https://i.pinimg.com/originals/60/fd/e8/60fde811b6be57094e0abc69d9c2622a.jpg" alt="Buy me a beer" />
-                    </a>
-                </div>
-            </div>
+            
         </div>
     );
 };
