@@ -11,7 +11,7 @@ function Jobs() {
         <Sort/>
         
     </div>
-    <div className='flex flex-wrap mt-5 gap-5 ml justify-center'>
+    <div className='flex flex-wrap  justify-center gap-10 mt-5'>
     {
       jobList.map((job,index)=><JobCard key={index} {...job}/>)
     }
