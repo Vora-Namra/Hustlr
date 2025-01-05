@@ -24,7 +24,7 @@ function Working() {
                     </div>
                 </div>
                 <div>
-                <div className="text-mine-shaft-200 text-xl font-semibold mx-auto flex justify-center  items-center">Build your resume</div>
+                <div className="text-mine-shaft-200 text-xl font-semibold mx-auto flex justify-center  items-center mt-3">Build your resume</div>
                 <div className="text-mine-shaft-300 mb-8">Lorem ipsum dolor, sit amet consectetur adipisicing.</div>
                 </div>
 
@@ -34,7 +34,7 @@ function Working() {
                     </div>
                 </div>
                 <div>
-                <div className="text-mine-shaft-200 text-xl font-semibold mx-auto flex justify-center  items-center">Apply For Job</div>
+                <div className="text-mine-shaft-200 text-xl font-semibold mx-auto flex justify-center  items-center mt-3">Apply For Job</div>
                 <div className="text-mine-shaft-300 mb-8">Lorem ipsum dolor, sit amet consectetur adipisicing.</div>
                 </div>
 
@@ -44,7 +44,7 @@ function Working() {
                     </div>
                 </div>
                 <div>
-                <div className="text-mine-shaft-200 text-xl font-semibold mx-auto flex justify-center  items-center">Get Hired</div>
+                <div className="text-mine-shaft-200 text-xl font-semibold mx-auto flex justify-center  items-center mt-3">Get Hired</div>
                 <div className="text-mine-shaft-300 mb-8">Lorem ipsum dolor, sit amet consectetur adipisicing.</div>
                 </div>
             </div>

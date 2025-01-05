@@ -12,7 +12,7 @@ import Header from './Header/Header';
 import Footer from './Footer/Footer';
 import FindTalentPage from './Pages/FindTalentPage';
 
-const App: React.FC = () => {
+const App = () => {
   const theme = createTheme({
     colors: {
       brightSun: [
