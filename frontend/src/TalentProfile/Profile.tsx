@@ -21,11 +21,11 @@ function Profile(props: any) {
             Messages
           </Button>
         </div>
-        <div className="text-xl flex gap-1 items-center">
+        <div className="text-md flex gap-1 items-center">
           <IconBriefcase className="h-5 w-5" stroke={1.5} />
           {props.role} &bull; {props.company}
         </div>
-        <div className="flex gap-1 text-xl items-center text-mine-shaft-400">
+        <div className="flex gap-1 text-sm mt-1 items-center text-mine-shaft-400">
           <IconMapPin className="h-5 w-5" stroke={1.5} />
           {props.location || "Not specified"}
         </div>
@@ -66,7 +66,7 @@ function Profile(props: any) {
 
       <Divider my="md" color="mineShaft.7" />
 
-      <div className="px-3">
+      <div className="px-3 mb-16">
         <div className="text-2xl font-semibold mb-5">Certifications</div>
         <div className="flex flex-col gap-8">
           {props.certifications.map((certi: any, index: number) => (

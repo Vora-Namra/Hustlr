@@ -3,7 +3,7 @@ import React from 'react';
 
 const Footer = () => {
   return (
-    <footer className="bg-mine-shaft-950 text-bright-sun-300 py-12 px-16">
+    <footer className="bg-mine-shaft-950 text-bright-sun-300 py-12 px-16 ">
       <div className="container mx-auto flex flex-wrap justify-between items-start px-10">
         {/* Left Section */}
         <div className="w-full  md:w-1/4 mb-6 md:mb-0">
