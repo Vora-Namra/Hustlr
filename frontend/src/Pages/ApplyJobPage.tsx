@@ -10,7 +10,7 @@ function ApplyJobPage() {
           fullWidth
           variant="light">Back</Button>
       </Link>
-        
+        <ApplyJobPage/>
 
       </div>
     );
