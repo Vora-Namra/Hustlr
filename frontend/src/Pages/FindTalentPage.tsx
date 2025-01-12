@@ -6,7 +6,6 @@ import Talents from '../FindTalent/Talents'
 function FindTalentPage() {
   return (
     <div>
-          <Divider size="xs" color='mineShaft.7'/>
           <SearchBar/>
           <Divider size="xs" color='mineShaft.7'/>
           <Talents/>

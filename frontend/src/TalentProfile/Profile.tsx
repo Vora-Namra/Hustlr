@@ -28,7 +28,7 @@ function Profile(props: any) {
         <div className="flex gap-1 text-sm mt-1 items-center text-mine-shaft-400">
           <IconMapPin className="h-5 w-5" stroke={1.5} />
           {props.location || "Not specified"}
-        </div>
+        </div>  
       </div>
       <Divider size="xs" my="md" color="mineShaft.7" />
 
