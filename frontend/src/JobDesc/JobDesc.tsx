@@ -1,9 +1,12 @@
 import { ActionIcon, Button, Divider } from "@mantine/core"
 import { IconAdjustments, IconBookmark, IconMapPin } from "@tabler/icons-react"
 import { Link } from "react-router-dom"
-import {card,skills} from "../Data/JobDescData"
+import {card,desc,skills} from "../Data/JobDescData"
+//@ts-ignore
+import  DOMPurify  from "dompurify"
 
 export const JobDesc =()=>{
+    const data=DOMPurify.sanitize(desc)
     return(
         <div className="w-2/3">
             <div className='flex justify-between'>
@@ -11,7 +14,7 @@ export const JobDesc =()=>{
                 <div className='p-3 bg-mine-shaft-800 rounded-xl'>
                     <img className='h-14' src={`/Icons/Google.png`} alt="" />
                 </div>
-                <div>
+                <div className="flex flex-col gap-1">
                     <div className='font-semibold text-2xl'>Software Engineer III</div>
                     <div className='text-lg text-mine-shaft-300'>Google &bull; 3 days ago &bull; 48 Applicants</div>
                 </div>
@@ -45,6 +48,27 @@ export const JobDesc =()=>{
                 </div>
             </div>
             <Divider my="xl"/>
+            <div className="[&_h4]:text-xl [&_*]:text-mine-shaft-300 [&_li]:marker:text-bright-sun-400 [&_li]:mb-1 [&_h4]:my-5 [&_h4]:font-semibold [&_h4]:text-mine-shaft-200 [&_p]:text-justify" dangerouslySetInnerHTML={{__html:data}}>
+            </div>
+            <Divider my="xl"/>
+            <div>
+                <div className="text-xl font-semibold mb-5">About Company</div>
+                <div className='flex justify-between mb-3'>
+            <div className='flex gap-2 items-center'>
+                <div className='p-3 bg-mine-shaft-800 rounded-xl'>
+                    <img className='h-8' src={`/Icons/Google.png`} alt="" />
+                </div>
+                <div className="flex flex-col">
+                    <div className='font-medium text-lg'>Google</div>
+                    <div className='text-lg text-mine-shaft-300'>10K+ Employees</div>
+                </div>
+            </div>
+                <Link to="">
+                <Button color="brightSun.4"  variant="light">Company Page</Button>
+                </Link>
+            </div>  
+            <div className="text-mine-shaft-300 text-justify">Lorem ipsum dolor sit amet consectetur adipisicing elit. Temporibus quaerat eum dolore, natus voluptas nisi? Fuga dolor temporibus sapiente saepe exercitationem repellat doloribus est eveniet? Culpa iste, accusamus expedita, alias molestias atque eligendi numquam libero repellendus voluptatem sit veritatis asperiores.</div>  
         </div>
+    </div>
     )
 }
