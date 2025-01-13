@@ -14,7 +14,15 @@ function TalentProfilePage() {
           variant="light">Back</Button>
       </Link>
       <div className="flex gap-5">
-        <Profile/>
+        <Profile
+        name={profile.name}
+        role={profile.role}
+        company={profile.company}
+        location={profile.location}
+        about={profile.about}
+        skills={profile.skills}
+        experience={profile.experience}
+        certifications={profile.certifications}/>
         <RecommendTalent/>
       </div>
     </div>

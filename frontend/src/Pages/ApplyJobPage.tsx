@@ -1,6 +1,7 @@
 import { Button } from "@mantine/core";
 import { IconArrowLeft } from "@tabler/icons-react";
 import { Link } from "react-router-dom";
+import { ApplyJobComp } from "../ApplyJob/ApplyJobComp";
 
 function ApplyJobPage() {
     return (
@@ -10,7 +11,7 @@ function ApplyJobPage() {
           fullWidth
           variant="light">Back</Button>
       </Link>
-        <ApplyJobPage/>
+        <ApplyJobComp/>
 
       </div>
     );

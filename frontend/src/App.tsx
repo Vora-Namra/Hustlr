@@ -16,7 +16,6 @@ import FindTalentPage from './Pages/FindTalentPage';
 import TalentProfilePage from './Pages/TalentProfilePage';
 import PostJobPage from './Pages/PostJobPage';
 import JobDescPage from './Pages/JobDescPage';
-import JobCard from './FindJobs/JobCard';
 import ApplyJobPage from './Pages/ApplyJobPage';
 
 const App = () => {
@@ -40,6 +39,7 @@ const App = () => {
   return (
     <MantineProvider defaultColorScheme='dark' theme={theme}>
       <BrowserRouter>
+      <div className='relative'>
       <Header/>
       <Divider size="xs" color="mineShaft.7" />
         <Routes>
@@ -52,6 +52,7 @@ const App = () => {
           <Route path="*" element={<HomePage />} />
         </Routes>
        <Footer/> 
+       </div>
       </BrowserRouter>
     </MantineProvider>
   );

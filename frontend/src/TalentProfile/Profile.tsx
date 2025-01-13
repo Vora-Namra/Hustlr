@@ -4,6 +4,7 @@ import ExpCard from "./ExpCard";
 import CertiCard from "./CertiCard";
 
 function Profile(props: any) {
+  console.log("Profile props:", props);
   return (
     <div className="w-2/3 mx-auto">
       <div className="relative">
