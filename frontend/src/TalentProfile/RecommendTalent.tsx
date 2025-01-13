@@ -1,4 +1,4 @@
-import React from 'react'
+
 import TalentCard from '../FindTalent/TalentCard'
 import { talents } from '../Data/TalentData'
 
@@ -15,4 +15,4 @@ function RecommendTalent() {
   )
 }
 
-export default RecommendTalent
+export default RecommendTalent;
