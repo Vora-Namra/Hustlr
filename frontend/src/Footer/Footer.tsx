@@ -1,5 +1,5 @@
 import { IconBrandFacebook, IconBrandInstagram, IconBrandX } from '@tabler/icons-react';
-import React from 'react';
+
 
 const Footer = () => {
   return (
