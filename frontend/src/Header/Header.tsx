@@ -2,9 +2,11 @@ import React from 'react'
 import {IconAsset, IconBell, IconSettings} from "@tabler/icons-react"
 import { Avatar, Indicator, NavLink } from '@mantine/core'
 import NavLinks from './NavLinks'
+import { useLocation } from 'react-router-dom'
 
 function Header() {
-  return (
+  const location=useLocation();
+  return location.pathname!="/signup"? (
     <div className='w-full bg-mine-shaft-950 px-6 text-white flex justify-between h-20 items-center '>
         <div className='flex gap-2 items-center text-bright-sun-400 ml-6'>
             <IconAsset className='h-12 w-12' stroke={2}/>
@@ -29,7 +31,7 @@ function Header() {
         </div>
 
     </div>
-  )
+  ):<div></div>
 }
 
 export default Header

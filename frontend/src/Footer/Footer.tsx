@@ -1,8 +1,11 @@
+import { Divider } from '@mantine/core';
 import { IconBrandFacebook, IconBrandInstagram, IconBrandX } from '@tabler/icons-react';
+import { useLocation } from 'react-router-dom';
 
 
 const Footer = () => {
-  return (
+  const location=useLocation();
+  return  location.pathname!="/signup"? (
     <footer className="bg-mine-shaft-950 text-bright-sun-300 py-12 px-16 ">
       <div className="container mx-auto flex flex-wrap justify-between items-start px-10">
         {/* Left Section */}
@@ -92,7 +95,7 @@ const Footer = () => {
         </div>
       </div>
     </footer>
-  );
+  ): <div></div>
 };
 
 export default Footer;
