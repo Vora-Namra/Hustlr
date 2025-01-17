@@ -32,7 +32,7 @@ function JobCard(props:any) {
             <div className='font-semibold text-mine-shaft-200'>&#8377;{props.package}</div>
             <div className='flex gap-1 text-xs items-center text-mine-shaft-400'>
                 <IconClockHour3 className='h-5 w-5' stroke={1.5}/> 
-                {props.postedDaysAgo} days ago </div>
+             Posted   {props.postedDaysAgo} days ago </div>
         </div>
 
     </Link>
