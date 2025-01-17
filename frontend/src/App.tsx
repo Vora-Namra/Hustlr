@@ -1,5 +1,6 @@
 import React from 'react';
 import { Divider } from '@mantine/core';
+import '@mantine/dates/styles.css';
 import { 
   MantineProvider, 
   createTheme

@@ -5,8 +5,8 @@ import {card,desc,skills} from "../Data/JobDescData"
 //@ts-ignore
 import  DOMPurify  from "dompurify"
 
-export const JobDesc =()=>{
-    const data=DOMPurify.sanitize(desc)
+export const Job =(props:any)=>{
+    const cleanHTML=DOMPurify.sanitize(desc)
     return(
         <div className="w-2/3">
             <div className='flex justify-between'>
@@ -21,9 +21,9 @@ export const JobDesc =()=>{
             </div>
             <div className="flex flex-col gap-2 items-center">
                 <Link to="/apply-job">
-                <Button color="brightSun.4" size="sm"  variant="light">Apply</Button>
+                <Button color="brightSun.4" size="sm"  variant="light">{props.edit?"Edit":"Apply"}</Button>
                 </Link>
-                <IconBookmark className='text-bright-sun-400 cursor-pointer stroke={1.5}'/>
+               {props.edit?<Button color="red.5" size="sm"  variant="outline">Delete</Button>: <IconBookmark className='text-bright-sun-400 cursor-pointer stroke={1.5}'/>}
             </div>
         </div>
             <Divider my="xl"/>
@@ -49,7 +49,7 @@ export const JobDesc =()=>{
                 </div>
             </div>
             <Divider my="xl"/>
-            <div className="[&_h4]:text-xl [&_*]:text-mine-shaft-300 [&_li]:marker:text-bright-sun-400 [&_li]:mb-1 [&_h4]:my-5 [&_h4]:font-semibold [&_h4]:text-mine-shaft-200 [&_p]:text-justify" dangerouslySetInnerHTML={{__html:data}}>
+            <div className="[&_h4]:text-xl [&_*]:text-mine-shaft-300 [&_li]:marker:text-bright-sun-400 [&_li]:mb-1 [&_h4]:my-5 [&_h4]:font-semibold [&_h4]:text-mine-shaft-200 [&_p]:text-justify" dangerouslySetInnerHTML={{__html:cleanHTML}}>
             </div>
             <Divider my="xl"/>
             <div>

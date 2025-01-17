@@ -1,7 +1,7 @@
 import { Button, Divider } from "@mantine/core";
 import { IconArrowLeft } from "@tabler/icons-react";
 import { Link } from "react-router-dom";
-import { JobDesc } from "../JobDesc/JobDesc";
+import { Job } from "../JobDesc/Job";
 import { RecommendedJobs } from "../JobDesc/RecommendedJob";
 
 function JobDescPage() {
@@ -13,7 +13,7 @@ function JobDescPage() {
           variant="light">Back</Button>
       </Link>
       <div className="flex gap-5 justify-around">
-        <JobDesc/>
+        <Job/>
         <RecommendedJobs/>
       </div>
     </div>
