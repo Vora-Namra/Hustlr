@@ -51,13 +51,6 @@ function TalentCard(props: any) {
           </div>
         </div>
         }
-        <div className="flex justify-between">
-          <div className="font-semibold text-mine-shaft-200">{props.expectedCtc}</div>
-          <div className="flex gap-1 text-xs items-center text-mine-shaft-400">
-            <IconMapPin className="h-5 w-5" stroke={1.5} />
-            {props.location}
-          </div>
-        </div>
         <Divider size="xs" color="mineShaft.7" />
         <div className="flex [&>*]:w-1/2 [&>*]:p-1">
         {
