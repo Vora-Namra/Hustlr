@@ -9,6 +9,6 @@ export const Login=()=>{
   <TextInput withAsterisk leftSection={<IconAt style={{width:rem(16),height:rem(16)}}/>} label="Email" placeholder="Your email"/>
   <PasswordInput withAsterisk leftSection={ <IconLock size={18} stroke={1.5} />} label="Password" placeholder="Password" />
   <Button autoContrast variant="filled">Sign Up</Button>
-  <div className="mx-auto">Don't have an account?<Link to="/signup" className="text-bright-sun-400 hover:underline">SignUp</Link></div>
+  <div className="mx-auto">Don't have an account?<Link to="/signup" className="text-bright-sun-400 hover:underline"> SignUp</Link></div>
 </div>
 }

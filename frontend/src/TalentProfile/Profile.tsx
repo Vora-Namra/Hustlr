@@ -9,15 +9,11 @@ function Profile(props: any) {
     <div className="w-2/3 mx-auto">
       <div className="relative">
         <img className="rounded-t-2xl mt-5" src="/banner.jpg" alt="Background" />
-        <img
-          className="rounded-full w-48 h-48 -bottom-1/3 absolute left-3 border-mine-shaft-950 border-8"
-          src="/avatar.png"
-          alt="Avatar"
-        />
+        <img className="rounded-full w-48 h-48 -bottom-1/3 absolute left-3 border-mine-shaft-950 border-8"
+          src="/avatar.png" alt="Avatar"/>
       </div>
       <div className="px-3 mt-20">
-        <div className="text-3xl font-semibold flex justify-between">
-          {props.name}
+        <div className="text-3xl font-semibold flex justify-between">{props.name}
           <Button color="brightSun.4" variant="light">
             Messages
           </Button>

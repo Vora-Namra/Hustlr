@@ -1,8 +1,9 @@
 import { Anchor, Button, Checkbox, PasswordInput, rem, TextInput } from "@mantine/core"
 import { IconAt, IconLock } from "@tabler/icons-react"
-import { Link } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom"
 
 export const SignUp=()=>{
+  const location=useLocation()
     return <div className="w-1/2 px-20 flex flex-col justify-center gap-3">
         <div className="text-2xl font-semibold">Create Account</div>
         <TextInput withAsterisk label="Full Name" placeholder="Your name"/>

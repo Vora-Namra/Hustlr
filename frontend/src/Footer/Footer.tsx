@@ -5,7 +5,7 @@ import { useLocation } from 'react-router-dom';
 
 const Footer = () => {
   const location=useLocation();
-  return  location.pathname!="/signup"? (
+  return location.pathname!="/signup"&& location.pathname!="/login"? (
     <footer className="bg-mine-shaft-950 text-bright-sun-300 py-12 px-16 ">
       <div className="container mx-auto flex flex-wrap justify-between items-start px-10">
         {/* Left Section */}
