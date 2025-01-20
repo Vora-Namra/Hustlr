@@ -56,7 +56,7 @@ function Profile(props: any) {
         <div className="text-2xl font-semibold mb-5">Experience</div>
         <div className="flex flex-col gap-8">
           {props.experience.map((exp: any, index: number) => (
-            <ExpCard key={exp.id || index} {...exp} />
+            <ExpCard key={exp.id || index} {...exp} edit={true} />
           ))}
         </div>
       </div>

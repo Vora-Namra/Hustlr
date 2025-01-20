@@ -1,8 +1,10 @@
 import { ActionIcon, Button, Divider, TagsInput, Textarea } from "@mantine/core";
-import { IconAdjustments, IconBriefcase, IconDeviceFloppy, IconMapPin, IconPencil } from "@tabler/icons-react";
+import { IconAdjustments, IconBriefcase, IconDeviceFloppy, IconMapPin, IconPencil, IconPlus } from "@tabler/icons-react";
 import { useState } from "react";
 import SelectInput from "./SelectInput";
 import fields from "../Data/Profile";
+import ExpCard from "./ExpCard";
+import { CertiInput } from "./CertiInput";
 
 
 function Profile(props: any) {
@@ -10,6 +12,8 @@ function Profile(props: any) {
   const [skill,setSkill]=useState(['JavaScript','React','Node.js'])
   const [edit, setEdit] = useState([false, false, false, false, false])
   const [about,setAbout] = useState('default value')
+  const [addExp,setAddExp] = useState(false)
+  const [addCerti,setAddCerti] = useState(false)
   const handleEdit = (index: any) => {
     const newEdit = [...edit]
     newEdit[index] = !newEdit[index]
@@ -83,22 +87,32 @@ function Profile(props: any) {
       <Divider my="md" color="mineShaft.7" />
 
       <div className="px-3">
-        <div className="text-2xl font-semibold mb-5 flex justify-between">Experience <ActionIcon onClick={() => handleEdit(3)} size="lg" color="brightSun.4" variant="subtle">
+        <div className="text-2xl font-semibold mb-5 flex justify-between">Experience <div className="flex gap-2"> <ActionIcon onClick={() => handleEdit(3)} size="lg" color="brightSun.4" variant="subtle">
+          <IconPlus className="h-4/5 w-4/5" />
+        </ActionIcon> <ActionIcon onClick={() => setAddExp(true)} size="lg" color="brightSun.4" variant="subtle">
           {edit[3] ? <IconDeviceFloppy className="h-4/5 w-4/5" /> : <IconPencil className="h-4/5 w-4/5" />}
-        </ActionIcon></div>
+        </ActionIcon></div></div>
         <div className="flex flex-col gap-8">
           ABC
+          {/* profile.experience.map((exp,index)=><ExpCard key{index} {...exp}={edit[3]}/>) */}
+          {addExp&&<ExpCard add setEdit={setAddExp}/>}
         </div>
       </div>
 
       <Divider my="md" color="mineShaft.7" />
 
       <div className="px-3 mb-16">
-        <div className="text-2xl font-semibold mb-5 flex justify-between">Certifications <ActionIcon onClick={() => handleEdit(4)} size="lg" color="brightSun.4" variant="subtle">
+        <div className="text-2xl font-semibold mb-5 flex justify-between">Certifications<div className="flex gap-2"> <ActionIcon onClick={() => handleEdit(4)} size="lg" color="brightSun.4" variant="subtle">
+          <IconPlus className="h-4/5 w-4/5" />
+        </ActionIcon> <ActionIcon onClick={() => setAddCerti(true)} size="lg" color="brightSun.4" variant="subtle">
           {edit[4] ? <IconDeviceFloppy className="h-4/5 w-4/5" /> : <IconPencil className="h-4/5 w-4/5" />}
-        </ActionIcon></div>
+        </ActionIcon></div></div>
         <div className="flex flex-col gap-8">
           XYZ
+          {/* profile.certifications.map((certi,index)=><CertiCard key{index} edit={edit[4]} {...edit}/>) */}
+          {
+            addCerti&&<CertiInput setEdit={setAddCerti}/>
+          }
         </div>
       </div>
     </div>

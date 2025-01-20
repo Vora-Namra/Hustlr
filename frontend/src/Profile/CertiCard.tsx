@@ -1,3 +1,6 @@
+import { ActionIcon } from "@mantine/core";
+import { IconDeviceFloppy, IconPencil, IconTrack, IconTrash } from "@tabler/icons-react";
+
 function CertiCard(props: any) {
     return (
       <div className="flex justify-between">
@@ -15,9 +18,14 @@ function CertiCard(props: any) {
             <div className="text-sm">{props.issuer}</div>
           </div>
         </div>
+        <div className="flex items-center gap-2">
         <div className="text-sm text-mine-shaft-300 flex flex-col items-end">
           <div>{props.issueDate || "N/A"}</div>
           <div>{props.certificateId || "N/A"}</div>
+         {props.edit&&<ActionIcon size="lg" color="red.8" variant="subtle">
+             <IconTrash className="h-4/5 w-4/5" stroke={1.5}/>
+        </ActionIcon>}
+        </div>
         </div>
       </div>
     );
