@@ -23,6 +23,7 @@ public class User {
     private String name;
 
     @Field("email")
+    @Indexed(unique = true)
     private String email;
 
     @Field("password")

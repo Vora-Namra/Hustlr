@@ -1,4 +1,4 @@
-import { TextInput, rem, PasswordInput, Checkbox, Anchor, Button } from "@mantine/core"
+import { TextInput, rem, PasswordInput,Button } from "@mantine/core"
 import { IconAt, IconLock } from "@tabler/icons-react"
 import { Link } from "react-router-dom"
 

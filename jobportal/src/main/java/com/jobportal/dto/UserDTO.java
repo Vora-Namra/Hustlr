@@ -1,6 +1,9 @@
 package com.jobportal.dto;
 
 import com.jobportal.entity.User;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,8 +14,15 @@ import lombok.NoArgsConstructor;
 public class UserDTO {
 
     private String id;
+
+    @NotBlank(message = "Name can not be null")
     private String name;
+
+    @Email(message = "Email is Invalid")
+    @NotBlank(message = "Email can not be null")
     private String email;
+
+    @NotBlank(message = "Password can not be null")
     private String password;
     private AccountType accountType;
 

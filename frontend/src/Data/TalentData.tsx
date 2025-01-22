@@ -1,4 +1,4 @@
-import { IconBriefcase, IconMapPin, IconRecharging, IconSearch } from "@tabler/icons-react";
+import {  IconMapPin, IconRecharging, IconSearch } from "@tabler/icons-react";
 
 const searchFields=[
     { title: "Job Title", icon: IconSearch, options: ['Designer', 'Developer', 'Product Manager', 'Marketing Specialist', 'Data Analyst', 'Sales Executive', 'Content Writer', 'Customer Support'] },
