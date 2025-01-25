@@ -1,4 +1,4 @@
-import { Divider } from '@mantine/core';
+
 import { IconBrandFacebook, IconBrandInstagram, IconBrandX } from '@tabler/icons-react';
 import { useLocation } from 'react-router-dom';
 

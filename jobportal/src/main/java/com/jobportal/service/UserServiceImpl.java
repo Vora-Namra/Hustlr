@@ -1,5 +1,6 @@
 package com.jobportal.service;
 
+import com.jobportal.dto.LoginDTO;
 import com.jobportal.dto.UserDTO;
 import com.jobportal.entity.User;
 import com.jobportal.repository.UserRepository;
@@ -32,5 +33,12 @@ public class UserServiceImpl implements UserService{
          User user = userDTO.toEntity();
          user = userRepository.save(user);
          return user.toDTO();
+    }
+
+    @Override
+    public UserDTO loginUser(LoginDTO loginDTO)  {
+        User user = userRepository.findByEmail(loginDTO.getEmail()).orElseThrow();
+        if(!passwordEncoder.matches(loginDTO.getPassword(),user.getPassword()));
+        return user.toDTO();
     }
 }

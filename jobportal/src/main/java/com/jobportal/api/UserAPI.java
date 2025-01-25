@@ -1,3 +1,4 @@
+
 package com.jobportal.api;
 
 
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 
 @RestController
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:5173")
 @Validated
 @RequestMapping("/users")
 public class UserAPI {
