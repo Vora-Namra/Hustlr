@@ -2,6 +2,7 @@
 package com.jobportal.api;
 
 
+import com.jobportal.dto.LoginDTO;
 import com.jobportal.dto.UserDTO;
 import com.jobportal.entity.User;
 import com.jobportal.service.UserService;
@@ -28,6 +29,14 @@ public class UserAPI {
         userDTO = userService.registerUser(userDTO);
         return new ResponseEntity<>(userDTO, HttpStatus.CREATED);
     }
+
+
+    @PostMapping("/login")
+    public ResponseEntity<UserDTO> loginUser(@RequestBody @Valid LoginDTO loginDTO) {
+        UserDTO userDTO = userService.loginUser(loginDTO);
+        return new ResponseEntity<>(userDTO, HttpStatus.OK);
+    }
+
 
 //
 //    @PostMapping("/register")

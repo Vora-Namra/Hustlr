@@ -36,7 +36,7 @@ const handleSubmit=()=>{
     return <div className="w-1/2 px-20 flex flex-col justify-center gap-3">
         <div className="text-2xl font-semibold">Create Account</div>
         <TextInput onChange={handleChange} name="name" value={data.name} withAsterisk label="Full Name" placeholder="Your name"/>
-      <TextInput  onChange={handleChange} name="email" value={data.email}withAsterisk leftSection={<IconAt style={{width:rem(16),height:rem(16)}}/>} label="Email" placeholder="Your email"/>
+      <TextInput  onChange={handleChange} name="email" value={data.email} withAsterisk leftSection={<IconAt style={{width:rem(16),height:rem(16)}}/>} label="Email" placeholder="Your email"/>
       <PasswordInput onChange={handleChange} name="password" value={data.password} withAsterisk leftSection={ <IconLock size={18} stroke={1.5} />} label="Password" placeholder="Password" />
       <PasswordInput onChange={handleChange} name="confirmPassword" value={data.confirmPassword} withAsterisk leftSection={ <IconLock size={18} stroke={1.5} />} label="Confirm Password" placeholder="Confirm Password" />
 
