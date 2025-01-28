@@ -28,4 +28,22 @@ export const signupValidation = (name: string, value: string): string => {
         return "";
     }
   };
+
+ export const loginValidation = (name: string, value: string): string => {
+    switch (name) {
+      
   
+      case "email":
+        if (value.trim().length === 0) return "Email is required.";
+        
+        return "";
+  
+      case "password":
+        if (value.trim().length === 0) return "Password is required.";
+        // Validate password complexity
+        return "";
+  
+      default:
+        return "";
+    }
+  }

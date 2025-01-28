@@ -1,9 +1,19 @@
-import { Anchor, Button, Checkbox, Group, PasswordInput, Radio, rem, TextInput } from "@mantine/core";
-import { IconAt, IconLock } from "@tabler/icons-react";
+import {
+  Anchor,
+  Button,
+  Checkbox,
+  Group,
+  PasswordInput,
+  Radio,
+  rem,
+  TextInput,
+} from "@mantine/core";
+import { IconAt, IconCheck, IconLock, IconX } from "@tabler/icons-react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { registerUser } from "../Services/UserServices";
 import { signupValidation } from "../Services/FormValidation"; // Import validation function
+import { notifications } from "@mantine/notifications";
 
 const form = {
   name: "",
@@ -20,6 +30,8 @@ export const SignUp = () => {
     password: "",
     confirmPassword: "",
   });
+
+  const navigate = useNavigate();
 
   const [data, setData] = useState(form);
 
@@ -38,9 +50,10 @@ export const SignUp = () => {
       setFormError({ ...formError, [name]: signupValidation(name, value) });
     }
   };
+
   const handleSubmit = () => {
     let isValid = true;
-  
+
     // Define newFormError with explicit key types
     const newFormError: { [key in keyof typeof data]: string } = {
       name: "",
@@ -49,36 +62,60 @@ export const SignUp = () => {
       confirmPassword: "",
       accountType: "",
     };
-  
+
     // Validate all fields
     (Object.keys(data) as Array<keyof typeof data>).forEach((key) => {
       if (key === "accountType") return;
-  
+
       if (key === "confirmPassword") {
         newFormError[key] = data[key] !== data.password ? "Passwords do not match." : "";
       } else {
         newFormError[key] = signupValidation(key, data[key]);
       }
-  
+
       if (newFormError[key]) isValid = false;
     });
-  
+
     setFormError(newFormError);
-  
+    console.log(isValid);
+
     // If the form is valid, proceed to register user
     if (isValid) {
       registerUser(data)
         .then((res) => {
           console.log("User registered successfully:", res);
+          setData(form);
+          notifications.show({
+            title: "Registered Successfully!",
+            message: "Redirecting to Login Page....🌟",
+            withCloseButton: true,
+            icon: <IconCheck style={{ width: "90%", height: "90%" }} />,
+            color: "teal",
+            withBorder: true,
+            className: "!border-green-500",
+          });
+          setTimeout(()=>{
+            navigate("/login");
+          },4000)
         })
         .catch((err) => {
           console.error("Error registering user:", err);
+          notifications.show({
+            title: "Registration Failed",
+            message: err.response?.data?.errorMessage || "Something went wrong!",
+            withCloseButton: true,
+            icon: <IconX style={{ width: "90%", height: "90%" }} />,
+            color: "red",
+            withBorder: true,
+            className: "!border-red-500",
+          });
         });
     }
   };
-  
+
   return (
     <div className="w-1/2 px-20 flex flex-col justify-center gap-3">
+       {/* Notifications component */}
       <div className="text-2xl font-semibold">Create Account</div>
       <TextInput
         name="name"
@@ -152,9 +189,9 @@ export const SignUp = () => {
       </Button>
       <div className="mx-auto">
         Have an account already?{" "}
-        <Link to="/login" className="text-bright-sun-400 hover:underline">
+        <span onClick={()=>{navigate("/login");setFormError(form); setData(form)}} className="text-bright-sun-400 cursor-pointer hover:underline">
           Login
-        </Link>
+        </span>
       </div>
     </div>
   );

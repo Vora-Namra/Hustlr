@@ -4,8 +4,12 @@ import '@mantine/dates/styles.css';
 import { 
   MantineProvider, 
   createTheme
-} from '@mantine/core';
+  
+}
+ from '@mantine/core';
+ import '@mantine/notifications/styles.css';
 import '@mantine/core/styles.css';
+import { Notifications } from '@mantine/notifications'; 
 import '@mantine/tiptap/styles.css'
 import '@mantine/carousel/styles.css';
 import HomePage from './Pages/HomePage';
@@ -44,6 +48,7 @@ const App = () => {
 
   return (
     <MantineProvider defaultColorScheme='dark' theme={theme}>
+      <Notifications position='top-center' zIndex={1000} />
       <BrowserRouter>
       <div className='relative'>
       <Header/>
