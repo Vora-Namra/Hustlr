@@ -1,16 +1,28 @@
 package com.jobportal.service;
 
 import com.jobportal.dto.LoginDTO;
+import com.jobportal.dto.ResponseDTO;
 import com.jobportal.dto.UserDTO;
+import com.jobportal.entity.Data;
+import com.jobportal.entity.OTP;
 import com.jobportal.entity.User;
+import com.jobportal.repository.OTPRepository;
 import com.jobportal.repository.UserRepository;
+import com.jobportal.utility.Utilities;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service(value = "userService")
 public class UserServiceImpl implements UserService{
 
@@ -18,7 +30,13 @@ public class UserServiceImpl implements UserService{
     private UserRepository userRepository;
 
     @Autowired
+    OTPRepository otpRepository;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JavaMailSender mailSender;
 
 
     @Override
@@ -48,4 +66,73 @@ public class UserServiceImpl implements UserService{
 
         return user.toDTO();
     }
+    @Override
+    public Boolean sendOtp(String email) {
+        try {
+            User user = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+
+            System.out.println("Attempting OTP send to: " + email);
+
+            String genOtp = Utilities.generateOTP();
+            OTP otp = new OTP(email, genOtp, LocalDateTime.now());
+            System.out.println("Generated OTP: " + genOtp);
+
+            MimeMessage mm = mailSender.createMimeMessage();
+            MimeMessageHelper message = new MimeMessageHelper(mm, true);
+            message.setTo(email);
+            message.setSubject("Your OTP Code");
+            String htmlBody = Data.getMessageBody(genOtp, 10);
+            message.setText(htmlBody, true);
+
+            mailSender.send(mm); // Attempt sending email
+
+            otpRepository.save(otp); // Save OTP after successful email
+            return true;
+
+        } catch (MessagingException e) {
+            throw new RuntimeException("Failed to send email: " + e.getMessage(), e);
+        } catch (Exception e) {
+            throw new RuntimeException("OTP Error: " + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public Boolean verifyOtp(String email,String otp) throws Exception {
+        OTP otpEntity = otpRepository.findById(email).orElseThrow(()->new RuntimeException("OTP not Found") );
+
+
+        if(!otpEntity.getOtpCode().equals(otp))throw new Exception("OTP is Incorrect");
+
+        return true;
+
+    }
+
+    @Override
+    public ResponseDTO changePassword(LoginDTO loginDTO) {
+        // Fetch the user by email
+        User user = userRepository.findByEmail(loginDTO.getEmail())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+
+
+        // Validate new password (optional, depending on requirements)
+        validatePassword(loginDTO.getPassword());
+
+        // Encode and save the new password
+        user.setPassword(passwordEncoder.encode(loginDTO.getPassword()));
+        userRepository.save(user);
+
+        // Optionally send a confirmation email or log the event
+        return new ResponseDTO("Password changed successfully");
+    }
+
+    // Validate password strength
+    private void validatePassword(String password) {
+        if (password.length() < 8 || !password.matches(".*[!@#$%^&*()].*")) {
+            throw new RuntimeException("Password must be at least 8 characters long and include a special character");
+        }
+    }
+
+
 }
