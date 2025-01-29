@@ -29,7 +29,7 @@ public class UserAPI {
     private UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<UserDTO>  registerUser(@RequestBody UserDTO userDTO){
+    public ResponseEntity<UserDTO> registerUser(@RequestBody UserDTO userDTO) {
         userDTO = userService.registerUser(userDTO);
         return new ResponseEntity<>(userDTO, HttpStatus.CREATED);
     }
@@ -42,17 +42,18 @@ public class UserAPI {
     }
 
     @PostMapping("/sendOtp/{email}")
-    public ResponseEntity<ResponseDTO> sendOtp(@PathVariable @Email(message="{user.email.invalid}") String email) throws Exception {
+    public ResponseEntity<ResponseDTO> sendOtp(@PathVariable @Email(message = "Invalid email") String email) throws Exception {
         userService.sendOtp(email);
-        return new ResponseEntity<>(new ResponseDTO("OTP Sent Successfully!"),HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseDTO("OTP Sent Successfully!"), HttpStatus.OK);
     }
 
-    @GetMapping("/verifyotp/{email}/{otp}")
-    public ResponseEntity<ResponseDTO> verifyOtp(@PathVariable @Email(message="email is invalid") String email,@PathVariable @Pattern(regexp = "^[0-9]{6}$" ,message="otp is invalid") String otp) throws Exception {
-        userService.verifyOtp(email,otp);
-        return new ResponseEntity<>(new ResponseDTO("OTP has been Verified!"),HttpStatus.OK);
+    @GetMapping("/verifyOtp/{email}/{otp}")
+    public ResponseEntity<ResponseDTO> verifyOtp(
+            @PathVariable @Email(message = "Invalid email") String email,
+            @PathVariable @Pattern(regexp = "^[0-9]{6}$", message = "Invalid OTP format") String otp) throws Exception {
+        userService.verifyOtp(email, otp);
+        return new ResponseEntity<>(new ResponseDTO("OTP Verified Successfully!"), HttpStatus.OK);
     }
-
 
     @PostMapping("/changePassword")
     public ResponseEntity<ResponseDTO> changePassword(@RequestBody @Valid LoginDTO loginDTO) {
@@ -61,10 +62,5 @@ public class UserAPI {
 
 
 
-//
-//    @PostMapping("/register")
-//    public ResponseEntity<?> register( @Valid @RequestBody UserDTO userDTO){
-//        userDTO = userService.registerUser(userDTO);
-//        return ResponseEntity.created(URI.create("/users/"+userDTO.getId())).body(userDTO);
-//    }
+
 }
