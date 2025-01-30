@@ -1,23 +1,19 @@
 
 package com.jobportal.api;
-
-
 import com.jobportal.dto.LoginDTO;
 import com.jobportal.dto.ResponseDTO;
 import com.jobportal.dto.UserDTO;
-import com.jobportal.entity.User;
 import com.jobportal.service.UserService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
+import java.util.Map;
+
 
 @RestController
 @CrossOrigin(origins = "http://localhost:5173")
@@ -47,13 +43,15 @@ public class UserAPI {
         return new ResponseEntity<>(new ResponseDTO("OTP Sent Successfully!"), HttpStatus.OK);
     }
 
-    @GetMapping("/verifyOtp/{email}/{otp}")
-    public ResponseEntity<ResponseDTO> verifyOtp(
-            @PathVariable @Email(message = "Invalid email") String email,
-            @PathVariable @Pattern(regexp = "^[0-9]{6}$", message = "Invalid OTP format") String otp) throws Exception {
-        userService.verifyOtp(email, otp);
-        return new ResponseEntity<>(new ResponseDTO("OTP Verified Successfully!"), HttpStatus.OK);
-    }
+    // From GET to POST and use request body
+@PostMapping("/verifyOtp")
+public ResponseEntity<ResponseDTO> verifyOtp(
+        @RequestBody Map<String, String> request) throws Exception { // Changed to request body
+    String email = request.get("email");
+    String otp = request.get("otp");
+    userService.verifyOtp(email, otp);
+    return new ResponseEntity<>(new ResponseDTO("OTP Verified Successfully!"), HttpStatus.OK);
+}
 
     @PostMapping("/changePassword")
     public ResponseEntity<ResponseDTO> changePassword(@RequestBody @Valid LoginDTO loginDTO) {

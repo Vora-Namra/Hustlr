@@ -1,3 +1,4 @@
+
 package com.jobportal.service;
 
 import com.jobportal.dto.LoginDTO;
@@ -14,10 +15,12 @@ import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import lombok.extern.slf4j.Slf4j;
@@ -104,26 +107,33 @@ public class UserServiceImpl implements UserService{
         }
     }
 
+    // UserServiceImpl.java - Add OTP validation enhancements
     @Override
-    public Boolean verifyOtp(String email, String otp) {
-        OTP otpEntity = otpRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("OTP not found"));
+public Boolean verifyOtp(String email, String otp) {
+        System.out.println("Verifying OTP for: {} | Code: {}"+email+ otp);
+    
+    OTP otpEntity = otpRepository.findByEmail(email)
+            .orElseThrow(() -> {
+                System.out.println("No OTP found for email: {}"+ email);
+                return new RuntimeException("OTP expired or invalid");
+            });
 
-        // Check if OTP is expired
-        if (otpEntity.getExpiryTime().isBefore(LocalDateTime.now())) {
-            otpRepository.delete(otpEntity); // Remove expired OTP
-            throw new RuntimeException("OTP has expired. Request a new one.");
-        }
-
-        // Check if OTP matches
-        if (!otpEntity.getOtpCode().equals(otp)) {
-            throw new RuntimeException("Invalid OTP");
-        }
-
-        // OTP is verified, delete it to prevent reuse
+    if (LocalDateTime.now().isAfter(otpEntity.getExpiryTime())) {
         otpRepository.delete(otpEntity);
-        return true;
+        System.out.println("Expired OTP attempt for: {}"+ email);
+        throw new RuntimeException("OTP has expired");
     }
+
+    if (!otpEntity.getOtpCode().equals(otp.trim())) {
+        System.out.println("Invalid OTP attempt for: {}"+ email);
+        throw new RuntimeException("Invalid OTP code");
+    }
+
+    otpRepository.delete(otpEntity);
+        System.out.println("OTP verified successfully for: {}"+ email);
+    return true;
+}
+
 
 
     @Override
@@ -152,6 +162,17 @@ public class UserServiceImpl implements UserService{
             throw new RuntimeException("Password must be at least 8 characters long and include a special character");
         }
     }
+
+    @Scheduled(fixedRate = 600000) // Runs every 10 minutes
+    void removeExpiredOTPs(){
+        LocalDateTime expiry = LocalDateTime.now().minusMinutes(5);
+        List<OTP> expiredOTPs = otpRepository.findByCreationTimeBefore(expiry);
+        if(!expiredOTPs.isEmpty()){
+            otpRepository.deleteAll(expiredOTPs);
+            System.out.println("Removed "+expiredOTPs.size() + " expired OTPs");
+        }
+    }
+
 
 
 }

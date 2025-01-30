@@ -19,4 +19,28 @@ const loginUser = async (login: any) => {
     });
 };
 
-export { registerUser, loginUser };
+const sendOtp = async (email: any) => {
+  return axios.post(`${base_url}sendOtp/${email}`)
+    .then(res => res.data)
+    .catch(err => {
+      throw err; 
+    });
+};
+
+const verifyOtp = async (email: string, otp: string) => {
+  return axios.post(`${base_url}verifyOtp`, { email, otp }) // Send as JSON body
+    .then(res => res.data)
+    .catch(err => {
+      throw err.response?.data || { message: "Verification failed" };
+    });
+};
+
+
+const changePass = async (email:string,password:string)=>{
+  return axios.post(`${base_url}changePassword`,{email,password})
+  .then(res=>res.data)
+  .catch(err=>{throw err});
+}
+
+
+export { registerUser, loginUser,sendOtp,verifyOtp,changePass };
