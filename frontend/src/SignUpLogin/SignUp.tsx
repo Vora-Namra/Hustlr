@@ -3,6 +3,7 @@ import {
   Button,
   Checkbox,
   Group,
+  LoadingOverlay,
   PasswordInput,
   Radio,
   rem,
@@ -34,6 +35,7 @@ export const SignUp = () => {
   const navigate = useNavigate();
 
   const [data, setData] = useState(form);
+  const [loading,setLoading] =useState(false);
 
   const handleChange = (event: any) => {
     const { name, value } = event.target;
@@ -81,6 +83,7 @@ export const SignUp = () => {
 
     // If the form is valid, proceed to register user
     if (isValid) {
+      setLoading(true);
       registerUser(data)
         .then((res) => {
           console.log("User registered successfully:", res);
@@ -95,6 +98,7 @@ export const SignUp = () => {
             className: "!border-green-500",
           });
           setTimeout(()=>{
+            setLoading(false);
             navigate("/login");
           },4000)
         })
@@ -114,6 +118,14 @@ export const SignUp = () => {
   };
 
   return (
+    <>
+     <LoadingOverlay
+          visible={loading}
+          zIndex={1000}
+          className="translate-x-1/2"
+          overlayProps={{ radius: 'sm', blur: 2 }}
+          loaderProps={{ color: 'brightSun.4', type: 'bars' }}
+        />
     <div className="w-1/2 px-20 flex flex-col justify-center gap-3">
        {/* Notifications component */}
       <div className="text-2xl font-semibold">Create Account</div>
@@ -184,7 +196,7 @@ export const SignUp = () => {
           </>
         }
       />
-      <Button onClick={handleSubmit} variant="filled">
+      <Button loading={loading} onClick={handleSubmit} variant="filled">
         Sign Up
       </Button>
       <div className="mx-auto">
@@ -194,5 +206,6 @@ export const SignUp = () => {
         </span>
       </div>
     </div>
+    </>
   );
 };
