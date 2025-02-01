@@ -35,24 +35,38 @@ public class UserServiceImpl implements UserService{
     @Autowired
     OTPRepository otpRepository;
 
+    private final ProfileService profileService;
+
+    @Autowired
+    public UserServiceImpl(ProfileService profileService) {
+        this.profileService = profileService;
+    }
+
     @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired
     private JavaMailSender mailSender;
 
-
     @Override
-    public UserDTO registerUser(UserDTO userDTO) {
-        Optional<User> optional = userRepository.findByEmail(userDTO.getEmail());
-        if(optional.isPresent()) try {
-            throw new Exception("user registered already");
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-        User user = userDTO.toEntity();
+    public UserDTO registerUser(UserDTO userDTO) throws Exception {
+        // Create the user
+        User user = new User();
+        user.setName(userDTO.getName());
+        user.setEmail(userDTO.getEmail());
+        user.setPassword(userDTO.getPassword());
+        user.setAccountType(userDTO.getAccountType());
         user = userRepository.save(user);
+
+        // Create a profile for the user
+        String profileId = profileService.createProfile(user.getEmail());  // Create profile with email
+
+        // Associate the profile ID with the user
+        user.setProfileId(profileId);
+
+        // Save the updated user with the profileId
+        user = userRepository.save(user);
+
         return user.toDTO();
     }
 
@@ -111,7 +125,7 @@ public class UserServiceImpl implements UserService{
     @Override
 public Boolean verifyOtp(String email, String otp) {
         System.out.println("Verifying OTP for: {} | Code: {}"+email+ otp);
-    
+
     OTP otpEntity = otpRepository.findByEmail(email)
             .orElseThrow(() -> {
                 System.out.println("No OTP found for email: {}"+ email);

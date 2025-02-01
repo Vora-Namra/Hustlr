@@ -6,7 +6,7 @@ import com.jobportal.dto.UserDTO;
 import jakarta.validation.Valid;
 
 public interface UserService {
-    public UserDTO registerUser(UserDTO userDTO);
+    public UserDTO registerUser(UserDTO userDTO) throws Exception;
 
     public UserDTO loginUser(LoginDTO loginDTO) ;
 

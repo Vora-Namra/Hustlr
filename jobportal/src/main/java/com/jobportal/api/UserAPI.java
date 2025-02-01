@@ -25,7 +25,7 @@ public class UserAPI {
     private UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<UserDTO> registerUser(@RequestBody UserDTO userDTO) {
+    public ResponseEntity<UserDTO> registerUser(@RequestBody UserDTO userDTO) throws Exception {
         userDTO = userService.registerUser(userDTO);
         return new ResponseEntity<>(userDTO, HttpStatus.CREATED);
     }
