@@ -6,7 +6,6 @@ import {
   Textarea,
 } from "@mantine/core";
 import {
-  IconAdjustments,
   IconBriefcase,
   IconDeviceFloppy,
   IconMapPin,
@@ -19,10 +18,13 @@ import fields from "../Data/Profile";
 import ExpCard from "./ExpCard";
 import { CertiInput } from "./CertiInput";
 import { getProfile } from "../Services/ProfileService";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import CertiCard from "./CertiCard";
+import Info from "./Info";
+import { setProfile } from "../Slices/ProfileSlice";
 
 function Profile(props: any) {
+  const dispatch = useDispatch();
   const select = fields;
   const user = useSelector((state: any) => state.user);
   const profile = useSelector((state:any)=>state.profile);
@@ -56,11 +58,10 @@ function Profile(props: any) {
   };
  
   useEffect(() => {
-    console.log(profile);
     if (user.profileId) {  // Use the profileId from the user object
       getProfile(user.profileId)
         .then((data: any) => {
-          console.log(data);
+            dispatch(setProfile(data));
           // Optionally update your state with the fetched profile data
         })
         .catch((err: any) => {
@@ -93,41 +94,7 @@ function Profile(props: any) {
 
       {/* Name Section */}
       <div className="px-3 mt-20">
-        <div className="text-3xl font-semibold flex justify-between">
-          NAME
-          <ActionIcon
-            onClick={() => handleEdit(0)}
-            size="lg"
-            color="brightSun.4"
-            variant="subtle"
-          >
-            {edit[0] ? (
-              <IconDeviceFloppy className="h-4/5 w-4/5" />
-            ) : (
-              <IconPencil className="h-4/5 w-4/5" />
-            )}
-          </ActionIcon>
-        </div>
-        {edit[0] ? (
-          <>
-            <div className="flex gap-10 [&>*]:w-1/2">
-              <SelectInput {...select[0]} />
-              <SelectInput {...select[1]} />
-            </div>
-            <SelectInput {...select[2]} />
-          </>
-        ) : (
-          <>
-            <div className="text-md flex gap-1 items-center">
-              <IconBriefcase className="h-5 w-5" stroke={1.5} />
-              {props.role} &bull; COMPANY NAME
-            </div>
-            <div className="flex gap-1 text-sm mt-1 items-center text-mine-shaft-400">
-              <IconMapPin className="h-5 w-5" stroke={1.5} />
-              NEW YORK, UNITED STATES
-            </div>
-          </>
-        )}
+        <Info/>
       </div>
       <Divider size="xs" my="md" color="mineShaft.7" />
 
@@ -158,13 +125,13 @@ function Profile(props: any) {
           />
         ) : (
           <div className="text-sm text-mine-shaft-300 text-justify">
-            No details provided.
+            {profile?.about}
           </div>
         )}
       </div>
       <Divider my="md" color="mineShaft.7" />
 
-      {/* Skills Section */}
+       {/* Skills Section */}
       <div className="px-3">
         <div className="text-2xl font-semibold mb-3 flex justify-between">
           Skills{" "}
@@ -191,17 +158,18 @@ function Profile(props: any) {
           />
         ) : (
           <div className="flex flex-wrap gap-2">
-            {profile?.skills?.map((skill: any, index: number) => (
+            {profile?.skills?.map((s: string, index: number) => (
               <div
                 key={index}
                 className="bg-bright-sun-400 text-sm font-semibold bg-opacity-15 rounded-3xl text-bright-sun-400 px-3 py-1"
               >
-                {skill}
+                {s}
               </div>
             ))}
           </div>
         )}
       </div>
+
       <Divider my="md" color="mineShaft.7" />
 
       {/* Experience Section */}
@@ -233,7 +201,7 @@ function Profile(props: any) {
         </div>
         <div className="flex flex-col gap-8">
           
-           {profile?.experience?.map((exp: any, index: any) => (
+           {profile?.experiences?.map((exp: any, index: any) => (
             <ExpCard key={index} {...exp} edit={edit[3]} />
           ))} 
           {addExp && <ExpCard add setEdit={setAddExp} />}
@@ -256,8 +224,7 @@ function Profile(props: any) {
             <IconPlus className="h-4/5 w-4/5" />
           </ActionIcon>
         </div>
-        <div className="flex flex-col gap-8">
-          XYZ
+        <div className="flex flex-col gap-4">
            {profile?.certifications?.map((certi: any, index: any) => (
             <CertiCard key={index} edit={edit[4]} {...certi} />
           ))} 
