@@ -1,4 +1,3 @@
-
 package com.jobportal.service;
 
 import com.jobportal.dto.LoginDTO;
@@ -18,22 +17,19 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
-
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service(value = "userService")
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
-    OTPRepository otpRepository;
+    private OTPRepository otpRepository;
 
     private final ProfileService profileService;
 
@@ -86,13 +82,14 @@ public class UserServiceImpl implements UserService{
 
         return user.toDTO();
     }
+
     @Override
     public Boolean sendOtp(String email) {
         try {
             User user = userRepository.findByEmail(email)
                     .orElseThrow(() -> new RuntimeException("User not found"));
 
-            System.out.println("Sending OTP to: " + email);
+            log.info("Sending OTP to: {}", email);
 
             String generatedOtp = Utilities.generateOTP();
             LocalDateTime expiryTime = LocalDateTime.now().plusMinutes(10); // OTP expires in 10 minutes
@@ -104,7 +101,7 @@ public class UserServiceImpl implements UserService{
             OTP otp = new OTP(email, generatedOtp, expiryTime);
             otpRepository.save(otp);
 
-            System.out.println("Generated OTP: " + generatedOtp);
+            log.info("Generated OTP: {}", generatedOtp);
 
             // Send OTP via email
             MimeMessage mm = mailSender.createMimeMessage();
@@ -124,42 +121,37 @@ public class UserServiceImpl implements UserService{
         }
     }
 
-    // UserServiceImpl.java - Add OTP validation enhancements
     @Override
-public Boolean verifyOtp(String email, String otp) {
-        System.out.println("Verifying OTP for: {} | Code: {}"+email+ otp);
+    public Boolean verifyOtp(String email, String otp) {
+        log.info("Verifying OTP for: {} | Code: {}", email, otp);
 
-    OTP otpEntity = otpRepository.findByEmail(email)
-            .orElseThrow(() -> {
-                System.out.println("No OTP found for email: {}"+ email);
-                return new RuntimeException("OTP expired or invalid");
-            });
+        OTP otpEntity = otpRepository.findByEmail(email)
+                .orElseThrow(() -> {
+                    log.info("No OTP found for email: {}", email);
+                    return new RuntimeException("OTP expired or invalid");
+                });
 
-    if (LocalDateTime.now().isAfter(otpEntity.getExpiryTime())) {
+        if (LocalDateTime.now().isAfter(otpEntity.getExpiryTime())) {
+            otpRepository.delete(otpEntity);
+            log.info("Expired OTP attempt for: {}", email);
+            throw new RuntimeException("OTP has expired");
+        }
+
+        if (!otpEntity.getOtpCode().equals(otp.trim())) {
+            log.info("Invalid OTP attempt for: {}", email);
+            throw new RuntimeException("Invalid OTP code");
+        }
+
         otpRepository.delete(otpEntity);
-        System.out.println("Expired OTP attempt for: {}"+ email);
-        throw new RuntimeException("OTP has expired");
+        log.info("OTP verified successfully for: {}", email);
+        return true;
     }
-
-    if (!otpEntity.getOtpCode().equals(otp.trim())) {
-        System.out.println("Invalid OTP attempt for: {}"+ email);
-        throw new RuntimeException("Invalid OTP code");
-    }
-
-    otpRepository.delete(otpEntity);
-        System.out.println("OTP verified successfully for: {}"+ email);
-    return true;
-}
-
-
 
     @Override
     public ResponseDTO changePassword(LoginDTO loginDTO) {
         // Fetch the user by email
         User user = userRepository.findByEmail(loginDTO.getEmail())
                 .orElseThrow(() -> new RuntimeException("User not found"));
-
-
 
         // Validate new password (optional, depending on requirements)
         validatePassword(loginDTO.getPassword());
@@ -172,7 +164,6 @@ public Boolean verifyOtp(String email, String otp) {
         return new ResponseDTO("Password changed successfully");
     }
 
-
     // Validate password strength
     private void validatePassword(String password) {
         if (password.length() < 8 || !password.matches(".*[!@#$%^&*()].*")) {
@@ -181,15 +172,12 @@ public Boolean verifyOtp(String email, String otp) {
     }
 
     @Scheduled(fixedRate = 600000) // Runs every 10 minutes
-    void removeExpiredOTPs(){
+    void removeExpiredOTPs() {
         LocalDateTime expiry = LocalDateTime.now().minusMinutes(5);
         List<OTP> expiredOTPs = otpRepository.findByCreationTimeBefore(expiry);
-        if(!expiredOTPs.isEmpty()){
+        if (!expiredOTPs.isEmpty()) {
             otpRepository.deleteAll(expiredOTPs);
-            System.out.println("Removed "+expiredOTPs.size() + " expired OTPs");
+            log.info("Removed {} expired OTPs", expiredOTPs.size());
         }
     }
-
-
-
 }

@@ -20,10 +20,12 @@ import ExpCard from "./ExpCard";
 import { CertiInput } from "./CertiInput";
 import { getProfile } from "../Services/ProfileService";
 import { useSelector } from "react-redux";
+import CertiCard from "./CertiCard";
 
 function Profile(props: any) {
   const select = fields;
   const user = useSelector((state: any) => state.user);
+  const profile = useSelector((state:any)=>state.profile);
   const [skill, setSkill] = useState([
     "JavaScript",
     "React",
@@ -36,35 +38,45 @@ function Profile(props: any) {
     "Express",
   ]);
   const [edit, setEdit] = useState([false, false, false, false, false]);
-  const [about, setAbout] = useState("default value");
   const [addExp, setAddExp] = useState(false);
   const [addCerti, setAddCerti] = useState(false);
   const [error, setError] = useState("");
+  const [about, setAbout] = useState(`As a Software Engineer at Google, I specialize in building scalable
+    and high-performance applications. My expertise lies in integrating front-end and back-end technologies to
+    deliver seamless user experiences. With a strong foundation in React and SpringBoot, and a focus on MongoDB
+    for database solutions, I am passionate about leveraging the latest technologies to solve complex problems
+    and drive innovation. My goal is to create impactful software that enhances productivity and meets user needs
+    effectively.`);
+    
 
   const handleEdit = (index: number) => {
     const newEdit = [...edit];
     newEdit[index] = !newEdit[index];
     setEdit(newEdit);
   };
-
+ 
   useEffect(() => {
-    if (user.id) {
-      getProfile(user.id)
+    console.log(profile);
+    if (user.profileId) {  // Use the profileId from the user object
+      getProfile(user.profileId)
         .then((data: any) => {
           console.log(data);
-          setError(""); // Clear any previous errors
+          // Optionally update your state with the fetched profile data
         })
         .catch((err: any) => {
-          console.log(err);
+          console.error("Error fetching profile:", err.response?.data || err.message);
           setError("Failed to fetch profile data. Please try again later.");
         });
     } else {
-      setError("Invalid user ID.");
+      setError("Invalid profile ID.");
     }
-  }, [user.id]);
+  }, [user.profileId]);
+  
+
 
   return (
-    <div className="w-4/5 mx-auto">
+    <>
+    <div className="w-4/5 mx-auto bg-mine-shaft-950">
       {error && <div className="text-red-500">{error}</div>}
       <div className="relative">
         <img
@@ -179,7 +191,7 @@ function Profile(props: any) {
           />
         ) : (
           <div className="flex flex-wrap gap-2">
-            {props.skills.map((skill: any, index: number) => (
+            {profile?.skills?.map((skill: any, index: number) => (
               <div
                 key={index}
                 className="bg-bright-sun-400 text-sm font-semibold bg-opacity-15 rounded-3xl text-bright-sun-400 px-3 py-1"
@@ -220,18 +232,20 @@ function Profile(props: any) {
           </div>
         </div>
         <div className="flex flex-col gap-8">
-          ABC
-          {/* Uncomment and update when mapping over experience data */}
-          {/* {profile.experience.map((exp, index) => (
+          
+           {profile?.experience?.map((exp: any, index: any) => (
             <ExpCard key={index} {...exp} edit={edit[3]} />
-          ))} */}
+          ))} 
           {addExp && <ExpCard add setEdit={setAddExp} />}
         </div>
       </div>
 
+      <Divider my="md" color="mineShaft.7" />
+
+
       {/* Certifications Section */}
       <div className="px-3">
-        <div className="text-2xl font-semibold mb-5 flex justify-between">
+        <div className="text-2xl font-semibold mb-2 flex justify-between">
           Certifications
           <ActionIcon
             onClick={() => setAddCerti(true)}
@@ -244,14 +258,18 @@ function Profile(props: any) {
         </div>
         <div className="flex flex-col gap-8">
           XYZ
-          {/* Uncomment and update when mapping over certification data */}
-          {/* {profile.certifications.map((certi, index) => (
+           {profile?.certifications?.map((certi: any, index: any) => (
             <CertiCard key={index} edit={edit[4]} {...certi} />
-          ))} */}
+          ))} 
           {addCerti && <CertiInput setEdit={setAddCerti} />}
         </div>
+        
       </div>
+
+      
     </div>
+    </>
+    
   );
 }
 

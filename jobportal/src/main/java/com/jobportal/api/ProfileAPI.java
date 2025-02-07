@@ -20,9 +20,18 @@ public class ProfileAPI {
     ProfileService profileService;
 
     @GetMapping("/get/{id}")
-    public ResponseEntity<ProfileDTO> getProfile(@PathVariable String id) throws Exception {
-        return new ResponseEntity<>(profileService.getProfile(id), HttpStatus.OK);
+    public ResponseEntity<?> getProfile(@PathVariable String id) {
+        try {
+            ProfileDTO profile = profileService.getProfile(id);
+            return ResponseEntity.ok(profile);
+        } catch (Exception e) {
+            if ("Profile Not Found".equals(e.getMessage())) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            }
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error");
+        }
     }
+
 
     @PutMapping("/update")
     public ResponseEntity<ProfileDTO> updateProfile(@RequestBody ProfileDTO profileDTO) throws Exception {
