@@ -3,20 +3,28 @@ package com.jobportal.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
-
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.mongodb.core.mapping.FieldType;
+import java.time.YearMonth;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class Experience {
-    String title;
-    String company;
-    String location;
-    LocalDateTime startDate;
-    LocalDateTime endDate;
-    Boolean working;
-    String description;
+    private String title;
+    private String company;
+    private String location;
 
+    // Force MongoDB to store this as a String.
+    @Field(targetType = FieldType.STRING)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM yyyy")
+    private String startDate;
+
+    @Field(targetType = FieldType.STRING)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM yyyy")
+    private String endDate;
+
+    private Boolean working;
+    private String description;
 }

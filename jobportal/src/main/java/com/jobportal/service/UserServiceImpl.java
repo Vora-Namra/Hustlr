@@ -54,12 +54,15 @@ public class UserServiceImpl implements UserService{
         User user = new User();
         user.setName(userDTO.getName());
         user.setEmail(userDTO.getEmail());
-        user.setPassword(userDTO.getPassword());
+
+        // Encode password before saving
+        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+
         user.setAccountType(userDTO.getAccountType());
         user = userRepository.save(user);
 
         // Create a profile for the user
-        String profileId = profileService.createProfile(user.getEmail());  // Create profile with email
+        String profileId = profileService.createProfile(userDTO.getEmail());  // Create profile with email
 
         // Associate the profile ID with the user
         user.setProfileId(profileId);

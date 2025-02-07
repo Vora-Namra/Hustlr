@@ -17,16 +17,15 @@ import org.springframework.web.bind.annotation.*;
 public class ProfileAPI {
 
     @Autowired
-      ProfileService profileService;
-
+    ProfileService profileService;
 
     @GetMapping("/get/{id}")
-    public ResponseEntity<ProfileDTO>  getProfile(@PathVariable String id)throws Exception{
+    public ResponseEntity<ProfileDTO> getProfile(@PathVariable String id) throws Exception {
         return new ResponseEntity<>(profileService.getProfile(id), HttpStatus.OK);
     }
 
     @PutMapping("/update")
-    public ResponseEntity<ProfileDTO>  updateProfile(@PathVariable ProfileDTO profileDTO)throws Exception{
+    public ResponseEntity<ProfileDTO> updateProfile(@RequestBody ProfileDTO profileDTO) throws Exception {
         return new ResponseEntity<>(profileService.updateProfile(profileDTO), HttpStatus.OK);
     }
 }
