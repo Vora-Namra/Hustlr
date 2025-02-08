@@ -1,5 +1,5 @@
 import { ActionIcon } from "@mantine/core";
-import { IconBriefcase, IconDeviceFloppy, IconMapPin, IconPencil } from "@tabler/icons-react";
+import { IconBriefcase, IconCheck, IconDeviceFloppy, IconMapPin, IconPencil, IconX } from "@tabler/icons-react";
 import SelectInput from "./SelectInput";
 import fields from "../Data/Profile";
 import { useState } from "react";
@@ -27,23 +27,34 @@ const Info = () => {
       form.setValues({jobTitle:profile.jobTitle,company:profile.company,location:profile.location});
     } else {
       setEdit(false);
-      let updatedProfile = {...profile,...form.getValues()};
-      dispatch(changeProfile(updatedProfile));
-      successNotification("Success","Profile Updated Successfully.")
+    
     }
   };
+  const handleSave=()=>{
+    setEdit(false);
+    let updatedProfile = {...profile,...form.getValues()};
+    dispatch(changeProfile(updatedProfile));
+    successNotification("Success","Profile Updated Successfully.")
+  }
 
   return (
     <>
       <div className="text-3xl font-semibold flex justify-between">
         {user.name}
-        <ActionIcon onClick={handleClick} size="lg" color="brightSun.4" variant="subtle">
+        <div>
+       {edit && <ActionIcon onClick={handleSave} size="lg" color="green.8" variant="subtle">
+        
+            <IconCheck className="h-4/5 w-4/5" />
+    
+        </ActionIcon>}
+        <ActionIcon onClick={handleClick} size="lg" color={edit?"red.8":"brightSun.4"} variant="subtle">
           {edit ? (
-            <IconDeviceFloppy className="h-4/5 w-4/5" />
+            <IconX className="h-4/5 w-4/5" />
           ) : (
             <IconPencil className="h-4/5 w-4/5" />
           )}
         </ActionIcon>
+        </div>
       </div>
       {edit ? (
         <>
