@@ -25,6 +25,7 @@ import { setProfile } from "../Slices/ProfileSlice";
 import About from "./About";
 import Skills from "./Skills";
 import Experiences from "./Experiences";
+import Certification from "./Certification";
 
 function Profile(props: any) {
   const dispatch = useDispatch();
@@ -117,26 +118,7 @@ function Profile(props: any) {
 
 
       {/* Certifications Section */}
-      <div className="px-3">
-        <div className="text-2xl font-semibold mb-2 flex justify-between">
-          Certifications
-          <ActionIcon
-            onClick={() => setAddCerti(true)}
-            size="lg"
-            color="brightSun.4"
-            variant="subtle"
-          >
-            <IconPlus className="h-4/5 w-4/5" />
-          </ActionIcon>
-        </div>
-        <div className="flex flex-col gap-4">
-           {profile?.certifications?.map((certi: any, index: any) => (
-            <CertiCard key={index} edit={edit[4]} {...certi} />
-          ))} 
-          {addCerti && <CertiInput setEdit={setAddCerti} />}
-        </div>
-        
-      </div>
+      <Certification/>
 
       
     </div>
