@@ -15,9 +15,7 @@ import { SignUpPage } from './SignUpPage';
 import { ProfilePage } from './ProfilePage';
 import { Divider } from '@mantine/core';
 import HomePage from './HomePage';
-import { getItem } from '../Services/LocalStorageService';
 import { useSelector } from 'react-redux';
-
 const AppRoutes=()=>{
     const user = useSelector((state:any)=>state.user);
     // const user = getItem("user");
