@@ -19,13 +19,9 @@ import {
   IconPlus,
 } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
-import SelectInput from "./SelectInput";
 import fields from "../Data/Profile";
-import ExpCard from "./ExpCard";
-import { CertiInput } from "./CertiInput";
-import { getProfile } from "../Services/ProfileService";
+import { getProfile, updateProfile } from "../Services/ProfileService";
 import { useDispatch, useSelector } from "react-redux";
-import CertiCard from "./CertiCard";
 import Info from "./Info";
 import { setProfile } from "../Slices/ProfileSlice";
 import About from "./About";
@@ -33,7 +29,6 @@ import Skills from "./Skills";
 import Experiences from "./Experiences";
 import Certification from "./Certification";
 import { useHover } from "@mantine/hooks";
-import { profile } from "../Data/TalentData";
 import { successNotification } from "../Services/NotificationService";
 
 function Profile(props: any) {
@@ -45,14 +40,24 @@ function Profile(props: any) {
   const [edit, setEdit] = useState([false, false, false, false, false]);
 
   const [error, setError] = useState("");
-  const handleFileChange=async (image:any)=>{
-    let picture:any = await getBase64(image);
-    console.log(picture);
-    let updatedProfile= {...profile,picture:picture.split(',')[1]};
-    dispatch(setProfile(updatedProfile));
-    successNotification("Success","Profile Picture Updated Successfully.");
 
-  }
+
+  const handleFileChange = async (image: any) => {
+    let picture: string = await getBase64(image) as string;
+    let updatedProfile = { ...profile, picture: picture.split(',')[1] };
+    dispatch(setProfile(updatedProfile));
+    successNotification("Success", "Profile Picture Updated Successfully.");
+
+    // Update the profile in the backend
+    try {
+        await updateProfile(updatedProfile);
+    } catch (err) {
+        console.error("Error updating profile:", err);
+        setError("Failed to update profile. Please try again later.");
+    }
+};
+
+
   const handleEdit = (index: number) => {
     const newEdit = [...edit];
     newEdit[index] = !newEdit[index];
