@@ -3,8 +3,12 @@ import {content, fields} from "../Data/PostJob";
 import { Button, NumberInput, TagsInput, Textarea } from "@mantine/core";
 import TextEditor from "./TextEditor";
 import { isNotEmpty, useForm } from "@mantine/form";
+import { postJob } from "../Services/JobService";
+import { errorNotification, successNotification } from "../Services/NotificationService";
+import { useNavigate } from "react-router-dom";
 
 const PostJob=()=> {
+    const navigate = useNavigate();
     const select=fields;
     const form = useForm({
         mode:"controlled",
@@ -34,7 +38,18 @@ const PostJob=()=> {
             description:isNotEmpty('Description is required'),
 
         }
-    })
+    });
+    const handlePost=()=>{
+        form.validate();
+        if(!form.isValid())return;
+        postJob(form.getValues()).then((res)=>{
+            successNotification("Success","Job Posted Successfully");
+            navigate('/posted-job')
+        }).catch((err)=>{
+            console.log(err);
+            errorNotification("Failed",err.response.data.errorMessage);
+        })
+    }
     return <div className="w-4/5 mx-auto">
        <div className="text-2xl font-semibold mb-5">Post a Job</div>
        <div className="flex flex-col gap-5">
@@ -64,7 +79,7 @@ const PostJob=()=> {
                 <TextEditor form={form}/>
             </div>
             <div className="flex gap-4">
-            <Button color="brightSun.4"  variant="light">Publish Job</Button>
+            <Button color="brightSun.4" onClick={handlePost}  variant="light">Publish Job</Button>
             <Button color="brightSun.4"  variant="outline">Save as Draft</Button>
             </div>
        </div>
