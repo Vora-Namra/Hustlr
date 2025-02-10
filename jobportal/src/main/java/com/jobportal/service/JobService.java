@@ -3,7 +3,13 @@ package com.jobportal.service;
 import com.jobportal.dto.JobDTO;
 import jakarta.validation.Valid;
 
+import java.util.List;
+
 public interface JobService {
 
    public JobDTO postJob(@Valid JobDTO jobDTO) throws Exception;
+
+   List<JobDTO> getAllJobs() throws Exception;
+
+   JobDTO getJob(String id) throws Exception;
 }
