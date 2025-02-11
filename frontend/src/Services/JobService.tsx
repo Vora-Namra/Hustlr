@@ -19,12 +19,11 @@ const postJob = async (job: any) => {
     .then(res => res.data)
     .catch(err=>{throw err})
   }
-
-  const getJob = async(id:any)=>{
-    return axios.get(`${base_url}/${id}`)
-    .then(res => res.data)
-    .catch(err=>{throw err})
-  }
+  const getJob = async (id: any) => {
+    return axios.get(`${base_url}get/${id}`)
+      .then(res => res.data)
+      .catch(err => { throw err });
+  };
 
   export {postJob,getAllJobs,getJob}
 
