@@ -1,3 +1,4 @@
+
 import { similar } from "../Data/Company"
 import { talents } from "../Data/TalentData"
 import TalentCard from "../FindTalent/TalentCard"

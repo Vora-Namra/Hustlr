@@ -1,3 +1,4 @@
+
 import { companyData } from "../Data/Company"
 
 export const AboutComp=()=>{

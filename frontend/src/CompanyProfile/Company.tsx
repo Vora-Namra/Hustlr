@@ -1,3 +1,4 @@
+
 import { Avatar, Divider, Tabs } from "@mantine/core"
 import { IconBriefcase, IconMapPin } from "@tabler/icons-react"
 import { AboutComp } from "./AboutComp"
