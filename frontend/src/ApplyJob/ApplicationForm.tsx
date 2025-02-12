@@ -35,6 +35,7 @@ const ApplicationForm=()=>{
         // Call the API to apply for the job
         await applyJob(id, applicant);
         successNotification("Success", "Application Submitted Successfully");
+        navigate("/job-history");
       } catch (err: any) {
         // Safely display the error message if available
         errorNotification("Failed", err.response?.data?.errorMessage || "Application Already failed");
