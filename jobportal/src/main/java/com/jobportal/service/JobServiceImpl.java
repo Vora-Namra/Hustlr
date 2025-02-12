@@ -49,11 +49,7 @@ public class JobServiceImpl implements JobService{
             applicants = new ArrayList<>();
         }
 
-        boolean alreadyApplied = applicants.stream()
-                .anyMatch(x -> x.getApplicantId().equals(applicantDTO.getApplicantId()));
-        if (alreadyApplied) {
-            throw new Exception("Job Applied Already");
-        }
+        if(applicants.stream().filter((x)->x.getApplicantId()==applicantDTO.getApplicantId()).toList().size()>0)throw new Exception("You have Already Applied.");
 
         applicantDTO.setApplicationStatus(ApplicationStatus.APPLIED);
         applicants.add(applicantDTO.toEntity());

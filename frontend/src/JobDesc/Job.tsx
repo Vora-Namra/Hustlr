@@ -1,15 +1,53 @@
 
 import { ActionIcon, Button, Divider } from "@mantine/core"
-import { IconBookmark } from "@tabler/icons-react"
+import { IconBookmark, IconBookmarkFilled } from "@tabler/icons-react"
 import { Link } from "react-router-dom"
 import {card,desc,skills} from "../Data/JobDescData"
 //@ts-ignore
 import  DOMPurify  from "dompurify"
 import { timeAgo } from "../Services/Utilities"
-import { ReactElement, JSXElementConstructor, ReactNode, ReactPortal, Key } from "react"
+import { ReactElement, JSXElementConstructor, ReactNode, ReactPortal, Key, useState, useEffect } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { updateProfile } from "../Services/ProfileService"
+import { setProfile } from "../Slices/ProfileSlice"
 
 export const Job =(props:any)=>{
+    const [applied,setApplied] = useState(false);
+    const user = useSelector((state:any)=>state.user);
+    const profile = useSelector((state:any)=>state.profile)
     const cleanHTML=DOMPurify.sanitize(props.description)
+    const dispatch = useDispatch();
+    const handleSavedJob = () => {
+        
+        // Check if the profile exists and has an id.
+        if (!profile || !profile.id) {
+          console.error("Profile id is null or undefined. Make sure the profile is loaded before saving a job.");
+          return;
+        }
+    
+        let savedJobs: string[] = profile.savedJobs ? [...profile.savedJobs] : [];
+        if (savedJobs.includes(props.id)) {
+          savedJobs = savedJobs.filter((id) => id !== props.id);
+        } else {
+          savedJobs = [...savedJobs, props.id];
+        }
+        const updatedProfile = { ...profile, savedJobs:savedJobs };
+    
+        updateProfile(updatedProfile)
+          .then((res) => {
+            dispatch(setProfile(res));
+          })
+          .catch((err) => {
+            console.error("Error updating profile:", err);
+          });
+      };
+      useEffect(()=>{
+        if(props.applicants?.filter((applicant:any)=>applicant.applicantId==user.id).length>0){
+            setApplied(true);
+        }else{
+            setApplied(false);
+        }
+      },[props])
     return(
         <div className="w-2/3">
             <div className='flex justify-between'>
@@ -23,10 +61,25 @@ export const Job =(props:any)=>{
                 </div>
             </div>
             <div className="flex flex-col gap-2 items-center">
-                <Link to={`/apply-job/${props.id}`}>
+                {(props.edit || !applied) && <Link to={`/apply-job/${props.id}`}>
                 <Button color="brightSun.4" size="sm"  variant="light">{props.edit?"Edit":"Apply"}</Button>
-                </Link>
-               {props.edit?<Button color="red.5" size="sm"  variant="outline">Delete</Button>: <IconBookmark className='text-bright-sun-400 cursor-pointer stroke={1.5}'/>}
+                </Link>}
+                {
+                  applied && <Button color="green.8" size="sm"  variant="light">Applied</Button>  
+                }
+               {props.edit?<Button color="red.5" size="sm"  variant="outline">Delete</Button>: profile.savedJobs && profile.savedJobs.includes(props.id) ? (
+            <IconBookmarkFilled
+              className="text-bright-sun-400 cursor-pointer"
+              stroke={1.5}
+              onClick={handleSavedJob}
+            />
+          ) : (
+            <IconBookmark
+              className="text-mine-shaft-300 hover:text-bright-sun-400 cursor-pointer"
+              stroke={1.5}
+              onClick={handleSavedJob}
+            />
+          )}
             </div>
         </div>
             <Divider my="xl"/>

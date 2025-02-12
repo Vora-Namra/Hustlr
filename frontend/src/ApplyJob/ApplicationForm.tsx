@@ -24,20 +24,16 @@ const ApplicationForm=()=>{
     const handleSubmit = async () => {
       try {
         setSubmit(true);
-        // Convert resume file to Base64
         const resumeData: any = await getBase64(form.getValues().resume);
-        // Build the applicant object with form data and the user's ID
         const applicant = {
           ...form.getValues(),
           applicantId: user.id,
           resume: resumeData.split(",")[1],
         };
-        // Call the API to apply for the job
         await applyJob(id, applicant);
         successNotification("Success", "Application Submitted Successfully");
         navigate("/job-history");
       } catch (err: any) {
-        // Safely display the error message if available
         errorNotification("Failed", err.response?.data?.errorMessage || "Application Already failed");
       } finally {
         setSubmit(false);
