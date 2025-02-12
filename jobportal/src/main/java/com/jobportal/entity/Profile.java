@@ -16,6 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Document(collection = "profiles")
+
 public class Profile {
     @Id
     private String id;
