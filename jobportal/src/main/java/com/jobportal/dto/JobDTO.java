@@ -5,9 +5,7 @@ import com.jobportal.entity.Job;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -19,7 +17,7 @@ public class JobDTO {
     private String id;
     private String jobTitle;
     private String company;
-    private List<Applicant> applicants;
+    private List<ApplicantDTO> applicants;
     private String about;
     private String experience;
     private String jobType;
@@ -35,7 +33,7 @@ public class JobDTO {
                 this.id,
                 this.jobTitle,
                 this.company,
-                this.applicants,
+                this.applicants!=null?this.applicants.stream().map((x)->x.toEntity()).toList():null,
                 this.about,
                 this.experience,
                 this.jobType,

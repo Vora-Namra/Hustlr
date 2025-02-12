@@ -13,10 +13,10 @@ export const Company=()=>{
         </div>
         <div className="px-3 mt-12">
             <div className="text-3xl font-semibold flex justify-between">Google <Avatar.Group>
-      <Avatar src="avatar1.png" />
-      <Avatar src="avatar2.png" />
-      <Avatar src="avatar.png" />
-      <Avatar>+10K</Avatar>
+            <Avatar src="/avatar.png" alt="it's me" />
+            <Avatar src="/avatar1.png" />
+            <Avatar src="/avatar2.png" />
+            <Avatar className="text-sm">+10K</Avatar>
     </Avatar.Group>
             </div>
         <div className="text-xl flex gap-1 items-center"> <IconBriefcase className="h-5 w-5" stroke={1.5} />Software Engineer &bull; Google</div>

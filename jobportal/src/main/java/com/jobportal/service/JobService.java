@@ -1,5 +1,6 @@
 package com.jobportal.service;
 
+import com.jobportal.dto.ApplicantDTO;
 import com.jobportal.dto.JobDTO;
 import jakarta.validation.Valid;
 
@@ -12,4 +13,6 @@ public interface JobService {
    List<JobDTO> getAllJobs() throws Exception;
 
    JobDTO getJob(String id) throws Exception;
+
+   void applyJob(String id, ApplicantDTO applicantDTO) throws Exception;
 }
