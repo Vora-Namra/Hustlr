@@ -2,7 +2,9 @@ package com.jobportal.service;
 
 import com.jobportal.dto.ProfileDTO;
 import com.jobportal.entity.Profile;
+import com.jobportal.entity.User;
 import com.jobportal.repository.ProfileRepository;
+import com.jobportal.repository.UserRepository;
 import com.jobportal.utility.Utilities;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,7 @@ public class ProfileServiceImpl implements ProfileService {
     @Autowired
     Utilities utilities;
 
+
     @Override
     public String createProfile(String email) throws Exception {
         Profile profile = new Profile();
@@ -29,6 +32,18 @@ public class ProfileServiceImpl implements ProfileService {
         profileRepository.save(profile);
         return profile.getId();  // Return the profile ID to associate with the user
     }
+ @Autowired
+UserRepository userRepository;
+@Override
+public ProfileDTO getProfileByApplicantId(String applicantId) throws Exception {
+    User user = userRepository.findById(applicantId)
+            .orElseThrow(() -> new Exception("User not found"));
+    if (user.getProfileId() == null) {
+        throw new Exception("User does not have a profile");
+    }
+    return profileRepository.findById(user.getProfileId())
+            .orElseThrow(() -> new Exception("Profile not found")).toDTO();
+}
 
     @Override
     public ProfileDTO getProfile(String id) throws Exception {

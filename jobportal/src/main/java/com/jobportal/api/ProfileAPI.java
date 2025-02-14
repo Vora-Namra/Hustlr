@@ -32,6 +32,16 @@ public class ProfileAPI {
         }
     }
 
+    @GetMapping("/applicant/{applicantId}")
+public ResponseEntity<?> getProfileByApplicantId(@PathVariable String applicantId) {
+    try {
+        ProfileDTO profile = profileService.getProfileByApplicantId(applicantId);
+        return ResponseEntity.ok(profile);
+    } catch (Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+    }
+}
+
 
     @PutMapping("/update")
     public ResponseEntity<ProfileDTO> updateProfile(@RequestBody ProfileDTO profileDTO) throws Exception {

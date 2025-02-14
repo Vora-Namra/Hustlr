@@ -30,7 +30,7 @@ export const PostedJobDesc=(props:any)=>{
                   <div className="flex flex-wrap mt-5 gap-5">
                     {
 
-                    props.applicant?.filter((x:any)=>x.applicationStatus=="APPLIED").map((talent:any, index:any) => (
+                    props.applicants?.filter((x:any)=>x.applicationStatus=="APPLIED").map((talent:any, index:any) => (
                     <TalentCard key={index} {...talent} posted/>
 
                     ))
@@ -41,7 +41,7 @@ export const PostedJobDesc=(props:any)=>{
                   <div className="flex flex-wrap mt-5 gap-5 justify-around">
                     {
                     
-                    props.applicant?.filter((x:any)=>x.applicationStatus=="INTERVIEWING").map((talent:any, index:any) => (
+                    props.applicants?.filter((x:any)=>x.applicationStatus=="INTERVIEWING").map((talent:any, index:any) => (
                     <TalentCard key={index} {...talent} invited/>
                     ))
                     
