@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 const PostJob=()=> {
-    const profile = useSelector((state:any)=>state.profile);
+    const user = useSelector((state:any)=>state.user);
     const navigate = useNavigate();
     const select=fields;
     const form = useForm({
@@ -42,24 +42,28 @@ const PostJob=()=> {
         }
     });
     const handlePost=()=>{
-        form.validate();
-        if(!form.isValid())return;
-        postJob({...form.getValues(),postedBy:profile.id,jobStatus:"ACTIVE"}).then((res)=>{
-            successNotification("Success","Job Posted Successfully");
-            navigate(`/posted-job/${res.id}`)
-        }).catch((err)=>{
-            console.log(err);
-            errorNotification("Failed",err.response.data.errorMessage);
-        })
+        const isValid = form.validate();
+        if(!isValid.hasErrors){
+            postJob({...form.getValues(),postedBy:user.id,jobStatus:"ACTIVE"}).then((res)=>{
+                successNotification("Success","Job Posted Successfully");
+                navigate(`/posted-job/${res.id}`)
+            }).catch((err)=>{
+                console.log(err);
+                errorNotification("Failed",err.response.data.errorMessage);
+            })
+        }
     }
     const handleDraft=()=>{
-        postJob({...form.getValues(),postedBy:profile.id,jobStatus:"DRAFT"}).then((res)=>{
-            successNotification("Success","Job Drafted Successfully");
-            navigate(`/posted-job/${res.id}`)
-        }).catch((err)=>{
-            console.log(err);
-            errorNotification("Failed",err.response.data.errorMessage);
-        })
+        const isValid = form.validate();
+        if(!isValid.hasErrors){
+            postJob({...form.getValues(),postedBy:user.id,jobStatus:"DRAFT"}).then((res)=>{
+                successNotification("Success","Job Drafted Successfully");
+                navigate(`/posted-job/${res.id}`)
+            }).catch((err)=>{
+                console.log(err);
+                errorNotification("Failed",err.response.data.errorMessage);
+            })
+        }
     }
     return <div className="w-4/5 mx-auto">
        <div className="text-2xl font-semibold mb-5">Post a Job</div>
