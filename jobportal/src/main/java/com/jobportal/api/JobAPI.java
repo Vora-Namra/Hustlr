@@ -42,4 +42,15 @@ public class JobAPI {
         jobService.applyJob(id,applicantDTO);
         return new ResponseEntity<>(new ResponseDTO("Applied Successfully."), HttpStatus.CREATED);
     }
+
+    @GetMapping("/postedBy/{id}")
+    public ResponseEntity<List<JobDTO>> getJobsPostedBys(@PathVariable String id) throws Exception {
+        return new ResponseEntity<>(jobService.getJobsPostedBy(id),HttpStatus.OK);
+    }
+
+    @PostMapping("/changeAppStatus")
+    public ResponseEntity<ResponseDTO> changeAppStatus( @RequestBody Application application) throws Exception {
+        jobService.changeAppStatus(application);
+        return new ResponseEntity<>(new ResponseDTO("Application Status Changed Successfully.."), HttpStatus.OK);
+    }
 }

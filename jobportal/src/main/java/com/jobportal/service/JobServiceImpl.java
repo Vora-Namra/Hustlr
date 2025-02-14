@@ -1,6 +1,7 @@
 package com.jobportal.service;
 
 import com.jobportal.dto.ApplicantDTO;
+import com.jobportal.dto.Application;
 import com.jobportal.dto.ApplicationStatus;
 import com.jobportal.dto.JobDTO;
 import com.jobportal.entity.Applicant;
@@ -53,6 +54,27 @@ public class JobServiceImpl implements JobService{
 
         applicantDTO.setApplicationStatus(ApplicationStatus.APPLIED);
         applicants.add(applicantDTO.toEntity());
+        job.setApplicants(applicants);
+        jobRepository.save(job);
+    }
+
+    @Override
+    public List<JobDTO> getJobsPostedBy(String id) throws Exception {
+        return jobRepository.findByPostedBy(id).stream().map((x)->x.toDTO()).toList();
+    }
+
+    @Override
+    public void changeAppStatus(Application application) throws Exception {
+        Job job = jobRepository.findById(application.getId())
+                .orElseThrow(() -> new RuntimeException("Job Not Found"));
+
+        List<Applicant> applicants = job.getApplicants().stream().map((x)->{
+            if(application.getApplicantId()==x.getApplicantId()){
+                x.setApplicationStatus(application.getApplicationStatus());
+                if(application.getApplicationStatus().equals(ApplicationStatus.INTERVIEWING))x.setInterviewTime(application.getInterviewTime());
+            }
+            return x;
+        }).toList();
         job.setApplicants(applicants);
         jobRepository.save(job);
     }
