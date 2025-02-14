@@ -6,7 +6,7 @@ function NavLinks() {
         { name: "Find Jobs", url: "find-jobs" },
         { name: "Find Talent", url: "find-talent" },
         { name: "Post Job", url: "post-job" },
-        { name: "Posted Job", url: "posted-job" },
+        { name: "Posted Job", url: "posted-job/0" },
         { name: "Job History", url: "job-history"},
     ]
 

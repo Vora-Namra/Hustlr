@@ -2,7 +2,7 @@
 import { ActionIcon, Button, Divider } from "@mantine/core"
 import { IconBookmark, IconBookmarkFilled } from "@tabler/icons-react"
 import { Link } from "react-router-dom"
-import {card,desc,skills} from "../Data/JobDescData"
+import {card} from "../Data/JobDescData"
 //@ts-ignore
 import  DOMPurify  from "dompurify"
 import { timeAgo } from "../Services/Utilities"
@@ -65,7 +65,7 @@ export const Job =(props:any)=>{
                 <Button color="brightSun.4" size="sm"  variant="light">{props.edit?"Edit":"Apply"}</Button>
                 </Link>}
                 {
-                  applied && <Button color="green.8" size="sm"  variant="light">Applied</Button>  
+                 !props.edit && applied && <Button color="green.8" size="sm"  variant="light">Applied</Button>  
                 }
                {props.edit?<Button color="red.5" size="sm"  variant="outline">Delete</Button>: profile.savedJobs && profile.savedJobs.includes(props.id) ? (
             <IconBookmarkFilled
