@@ -42,6 +42,8 @@ const postJob = async (job: any) => {
 
      const changeAppStatus=async(application:any)=>{
       return axios.put(`${base_url}changeAppStatus`,application)
+      .then(res=>res.data)
+      .catch(err=>{throw err});
      }
 
   export {postJob,getAllJobs,getJob,applyJob,getJobPostedBy,changeAppStatus}

@@ -48,9 +48,14 @@ public class JobAPI {
         return new ResponseEntity<>(jobService.getJobsPostedBy(id),HttpStatus.OK);
     }
 
-    @PostMapping("/changeAppStatus")
-    public ResponseEntity<ResponseDTO> changeAppStatus( @RequestBody Application application) throws Exception {
+    // JobAPI.java
+@PutMapping("/changeAppStatus")
+public ResponseEntity<?> changeAppStatus(@RequestBody Application application) {
+    try {
         jobService.changeAppStatus(application);
-        return new ResponseEntity<>(new ResponseDTO("Application Status Changed Successfully.."), HttpStatus.OK);
+        return ResponseEntity.ok(new ResponseDTO("Status updated"));
+    } catch (Exception e) {
+        return ResponseEntity.internalServerError().body(e.getMessage());
     }
+}
 }

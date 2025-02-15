@@ -18,39 +18,57 @@ function TalentCard(props: any) {
   const [time,setTime] = useState<any>(null);
   const ref = useRef<HTMLInputElement>(null);
 
-  const handleOffer = (status: string) => {
-    if (!date || !time) {
-      errorNotification('Error', 'Please select both date and time');
-      return;
-    }
+  // const handleOffer = (status: string) => {
+  //   if (!date || !time) {
+  //     errorNotification('Error', 'Please select both date and time');
+  //     return;
+  //   }
   
-    // Create new Date instance to avoid mutation
-    const interviewDate = new Date(date);
-    const [hours, minutes] = time.split(':').map(Number);
+  //   // Create new Date instance to avoid mutation
+  //   const interviewDate = new Date(date);
+  //   const [hours, minutes] = time.split(':').map(Number);
     
-    // Set time components individually
-    interviewDate.setHours(hours);
-    interviewDate.setMinutes(minutes);
-    interviewDate.setSeconds(0);
-    interviewDate.setMilliseconds(0);
+  //   // Set time components individually
+  //   interviewDate.setHours(hours);
+  //   interviewDate.setMinutes(minutes);
+  //   interviewDate.setSeconds(0);
+  //   interviewDate.setMilliseconds(0);
   
-    const Interview = {
-      id,
+  //   const Interview = {
+  //     id:id,
+  //     applicantId: props.applicantId, // Use props.applicantId instead of profile.id
+  //     applicationStatus: status,
+  //     interviewTime: interviewDate.toISOString() // Convert to ISO string
+  //   };
+  
+  //   changeAppStatus(Interview)
+  //     .then(() => {
+  //       successNotification('Success', 'Interview Scheduled Successfully');
+  //       close();
+  //     })
+  //     .catch((err) => {
+  //       errorNotification('Error', err.response?.data?.errorMessage || 'Operation failed');
+  //     });
+  // };
+
+
+  const handleOffer=(status:string)=>{
+      const [hours,minutes]= time.split(":").map(Number);
+      date?.setHours(hours,minutes);
+      console.log(date);
+          const interview = {
+      id:id,
       applicantId: props.applicantId, // Use props.applicantId instead of profile.id
       applicationStatus: status,
-      interviewTime: interviewDate.toISOString() // Convert to ISO string
+      interviewTime: date?.toISOString() // Convert to ISO string
     };
-  
-    changeAppStatus(Interview)
-      .then(() => {
-        successNotification('Success', 'Interview Scheduled Successfully');
-        close();
-        window.location.reload();
-      })
-      .catch((err) => {
-        errorNotification('Error', err.response?.data?.errorMessage || 'Operation failed');
-      });
-  };
+    changeAppStatus(interview).then((res)=>{
+      successNotification('Success', 'Interview Scheduled Successfully');
+      close();
+    }).catch((err)=>{
+      errorNotification('Error', err.response?.data?.errorMessage || 'Operation failed');
+    })
+  }
 
   useEffect(() => {
     const fetchProfile = async () => {

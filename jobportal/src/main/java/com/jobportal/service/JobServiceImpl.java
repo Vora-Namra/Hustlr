@@ -67,17 +67,19 @@ public class JobServiceImpl implements JobService{
     public void changeAppStatus(Application application) throws Exception {
         Job job = jobRepository.findById(application.getId())
                 .orElseThrow(() -> new RuntimeException("Job Not Found"));
-
-        List<Applicant> applicants = job.getApplicants().stream().map((x)->{
-            if(application.getApplicantId()==x.getApplicantId()){
+    
+        List<Applicant> updatedApplicants = job.getApplicants().stream().map(x -> {
+            if (application.getApplicantId().equals(x.getApplicantId())) {
                 x.setApplicationStatus(application.getApplicationStatus());
-                if(application.getApplicationStatus().equals(ApplicationStatus.INTERVIEWING))x.setInterviewTime(application.getInterviewTime());
+                if (application.getApplicationStatus().equals(ApplicationStatus.INTERVIEWING)) {
+                    x.setInterviewTime(application.getInterviewTime());
+                }
             }
             return x;
-        }).toList();
-        job.setApplicants(applicants);
+        }).toList(); // or use .collect(Collectors.toList()) if needed
+    
+        job.setApplicants(updatedApplicants);
         jobRepository.save(job);
     }
-
-
+    
 }

@@ -53,6 +53,8 @@ export const JobHistory = () => {
                     <Tabs.Tab value="SAVED">Saved</Tabs.Tab>
                     <Tabs.Tab value="OFFERED">Offered</Tabs.Tab>
                     <Tabs.Tab value="INTERVIEWING">Interviewing</Tabs.Tab>
+                    <Tabs.Tab value="REJECTED">Rejected</Tabs.Tab>
+
                 </Tabs.List>
 
                 <Tabs.Panel value={activeTab} className="[&>div]:w-full">
