@@ -49,4 +49,17 @@ const formatDate = (dateString:string)=>{
     })
   }
 
-export {formatDate,timeAgo,getBase64};
+
+  const formatInterviewTime=(datestr:any)=>{
+    const date = new Date(datestr);
+     return date.toLocaleString('en-US',{
+      year:'numeric',
+      month:'long',
+      day:'numeric',
+      hour:'numeric',
+      minute:'numeric',
+      hour12:true
+    });
+  }
+
+export {formatDate,timeAgo,getBase64,formatInterviewTime};

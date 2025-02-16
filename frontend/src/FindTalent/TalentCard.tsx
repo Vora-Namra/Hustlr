@@ -7,51 +7,20 @@ import { DateInput, TimeInput } from '@mantine/dates';
 import { getProfileByApplicantId } from '../Services/ProfileService';
 import { changeAppStatus } from '../Services/JobService';
 import { errorNotification, successNotification } from '../Services/NotificationService';
+import { formatInterviewTime } from '../Services/Utilities';
 
 function TalentCard(props: any) {
   const {id} = useParams();
   const [opened, { open, close }] = useDisclosure(false);
   const [profile, setProfile] = useState<any>(null);
+  const [app,{open:openApp,close:closeApp}] = useDisclosure(false); 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [date, setDate] = useState<Date | null>(null);
   const [time,setTime] = useState<any>(null);
   const ref = useRef<HTMLInputElement>(null);
 
-  // const handleOffer = (status: string) => {
-  //   if (!date || !time) {
-  //     errorNotification('Error', 'Please select both date and time');
-  //     return;
-  //   }
   
-  //   // Create new Date instance to avoid mutation
-  //   const interviewDate = new Date(date);
-  //   const [hours, minutes] = time.split(':').map(Number);
-    
-  //   // Set time components individually
-  //   interviewDate.setHours(hours);
-  //   interviewDate.setMinutes(minutes);
-  //   interviewDate.setSeconds(0);
-  //   interviewDate.setMilliseconds(0);
-  
-  //   const Interview = {
-  //     id:id,
-  //     applicantId: props.applicantId, // Use props.applicantId instead of profile.id
-  //     applicationStatus: status,
-  //     interviewTime: interviewDate.toISOString() // Convert to ISO string
-  //   };
-  
-  //   changeAppStatus(Interview)
-  //     .then(() => {
-  //       successNotification('Success', 'Interview Scheduled Successfully');
-  //       close();
-  //     })
-  //     .catch((err) => {
-  //       errorNotification('Error', err.response?.data?.errorMessage || 'Operation failed');
-  //     });
-  // };
-
-
   const handleOffer=(status:string)=>{
       const [hours,minutes]= time.split(":").map(Number);
       date?.setHours(hours,minutes);
@@ -157,8 +126,8 @@ function TalentCard(props: any) {
 
       {props.invited ? (
         <div className='flex gap-1 text-mine-shaft-200 text-sm items-center'>
-          <IconCalendarMonth stroke={1.5} />
-          Interview: August 27, 2024 10:00 AM
+          <IconCalendarMonth stroke={1.5} /> 
+          Interview : {formatInterviewTime(props.interviewTime)}
         </div>
       ) : (
         <div className="flex justify-between">
@@ -201,7 +170,7 @@ function TalentCard(props: any) {
             </div>
           </>
         ) : (
-          <>
+         props.invited && <>
             <div>
               <Button color="brightSun.4" fullWidth variant="outline">
                 Accept
@@ -215,6 +184,9 @@ function TalentCard(props: any) {
           </>
         )}
       </div>
+      {(props.invited || props.posted)&&<Button color="brightSun.4" fullWidth variant="filled" autoContrast>
+                View Application
+              </Button>}
 
       <Modal opened={opened} onClose={close} title="Schedule Interview" centered>
         <div className='flex flex-col gap-4'>
@@ -235,6 +207,11 @@ function TalentCard(props: any) {
           <Button color="brightSun.4" onClick={()=>handleOffer("INTERVIEWING")} fullWidth variant="light">
             Schedule
           </Button>
+        </div>
+      </Modal>
+      <Modal opened={app} onClose={closeApp} title="Schedule Interview" centered>
+        <div className='flex flex-col gap-4'>
+          <div>Email:&emsp; <a className='text-bright-sun-400 hover:underline cursor-pointer text-center' href={`mailto`}></a></div>
         </div>
       </Modal>
     </div>
