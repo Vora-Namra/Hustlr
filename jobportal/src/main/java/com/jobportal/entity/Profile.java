@@ -20,6 +20,7 @@ import java.util.List;
 public class Profile {
     @Id
     private String id;
+    private String name;
     private String email;
     private String jobTitle;
     private String company;
@@ -32,7 +33,7 @@ public class Profile {
     private List<String> savedJobs;
 
     public ProfileDTO toDTO() {
-        return new ProfileDTO(this.id, this.email, this.jobTitle, this.company, this.location,
+        return new ProfileDTO(this.id,this.name, this.email, this.jobTitle, this.company, this.location,
                 this.about, this.picture!=null?Base64.getEncoder().encodeToString(this.picture):null,
                 this.skills, this.experiences, this.certifications,this.savedJobs);
     }

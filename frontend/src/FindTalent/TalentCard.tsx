@@ -7,7 +7,7 @@ import { DateInput, TimeInput } from '@mantine/dates';
 import { getProfileByApplicantId } from '../Services/ProfileService';
 import { changeAppStatus } from '../Services/JobService';
 import { errorNotification, successNotification } from '../Services/NotificationService';
-import { formatInterviewTime } from '../Services/Utilities';
+import { formatInterviewTime, openResume } from '../Services/Utilities';
 
 function TalentCard(props: any) {
   const {id} = useParams();
@@ -22,17 +22,24 @@ function TalentCard(props: any) {
 
   
   const handleOffer=(status:string)=>{
+    let interview = {
+      id:id,
+      applicantId: props.applicantId, 
+      applicationStatus: status,
+      interviewTime: date?.toISOString() 
+    };
+    if(status=="INTERVIEWING"){
       const [hours,minutes]= time.split(":").map(Number);
       date?.setHours(hours,minutes);
-      console.log(date);
-          const interview = {
-      id:id,
-      applicantId: props.applicantId, // Use props.applicantId instead of profile.id
-      applicationStatus: status,
-      interviewTime: date?.toISOString() // Convert to ISO string
-    };
+      
+      interview={...interview, interviewTime:date?.toISOString() };
+    }
+      
     changeAppStatus(interview).then((res)=>{
-      successNotification('Success', 'Interview Scheduled Successfully');
+      if(status=="INTERVIEWING")successNotification('Interview Scheduled', 'Interview Scheduled Successfully');
+      else if(status=="OFFERED")successNotification("Offered","Offer has been sent Successfully.");
+      else successNotification("Rejected","Applicant Had been Rejected.");
+      window.location.reload();
       close();
     }).catch((err)=>{
       errorNotification('Error', err.response?.data?.errorMessage || 'Operation failed');
@@ -172,19 +179,19 @@ function TalentCard(props: any) {
         ) : (
          props.invited && <>
             <div>
-              <Button color="brightSun.4" fullWidth variant="outline">
+              <Button color="brightSun.4" onClick={()=>handleOffer("OFFERED")} fullWidth variant="outline">
                 Accept
               </Button>
             </div>
             <div>
-              <Button color="brightSun.4" fullWidth variant="outline">
+              <Button color="brightSun.4" onClick={()=>handleOffer("REJECTED")} fullWidth variant="outline">
                 Reject
               </Button>
             </div>
           </>
         )}
       </div>
-      {(props.invited || props.posted)&&<Button color="brightSun.4" fullWidth variant="filled" autoContrast>
+      {(props.invited || props.posted)&&<Button color="brightSun.4" fullWidth variant="filled" autoContrast onClick={openApp}>
                 View Application
               </Button>}
 
@@ -209,9 +216,18 @@ function TalentCard(props: any) {
           </Button>
         </div>
       </Modal>
-      <Modal opened={app} onClose={closeApp} title="Schedule Interview" centered>
+      <Modal opened={app} onClose={closeApp} title="Application" centered>
         <div className='flex flex-col gap-4'>
-          <div>Email:&emsp; <a className='text-bright-sun-400 hover:underline cursor-pointer text-center' href={`mailto`}></a></div>
+          <div>Email: &emsp; <a className='text-bright-sun-400 hover:underline cursor-pointer text-center' href={`mailto:${props.email}`}>{props.email}</a></div>
+          <div>
+            Website: &emsp; <a target='_blank' className='text-bright-sun-400 hover:underline cursor-pointer text-center' href={props.website}>{props.website}</a>
+          </div>
+        <div>
+          Resume: &emsp; <span className='text-bright-sun-400 hover:underline cursor-pointer text-center' onClick={()=>openResume(props.resume)}>{props.name}</span>
+        </div>
+        <div>
+          Cover Letter:  &emsp; <div>{props.coverLetter}</div>
+        </div>
         </div>
       </Modal>
     </div>

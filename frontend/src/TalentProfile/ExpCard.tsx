@@ -1,3 +1,5 @@
+import { formatDate } from "../Services/Utilities";
+
 function ExpCard(props: any) {
     return (
       <div className="flex flex-col gap-2">
@@ -19,7 +21,7 @@ function ExpCard(props: any) {
             </div>
           </div>
           <div className="text-sm text-mine-shaft-300">
-            {props.startDate} - {props.endDate || "Present"}
+            {formatDate(props.startDate)} - {formatDate(props.endDate) || "Present"}
           </div>
         </div>
         <div className="text-sm text-mine-shaft-300 text-justify">{props.description}</div>

@@ -1,3 +1,5 @@
+import { formatDate } from "../Services/Utilities";
+
 function CertiCard(props: any) {
     return (
       <div className="flex justify-between">
@@ -16,7 +18,7 @@ function CertiCard(props: any) {
           </div>
         </div>
         <div className="text-sm text-mine-shaft-300 flex flex-col items-end">
-          <div>{props.issueDate || "N/A"}</div>
+          <div>{formatDate(props.issueDate) || "N/A"}</div>
           <div>{props.certificateId || "N/A"}</div>
         </div>
       </div>

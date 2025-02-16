@@ -62,4 +62,22 @@ const formatDate = (dateString:string)=>{
     });
   }
 
-export {formatDate,timeAgo,getBase64,formatInterviewTime};
+  function openResume(base64String:string) {
+    const byteCharacters = atob(base64String);
+    const byteNumbers = new Array(byteCharacters.length);
+    for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+    const byteArray = new Uint8Array(byteNumbers);
+    
+    const blob = new Blob([byteArray], { type: "application/pdf" });
+    
+    const blobUrl = URL.createObjectURL(blob);
+    
+    window.open(blobUrl, "_blank");
+
+}
+
+
+
+export {formatDate,timeAgo,getBase64,formatInterviewTime,openResume};
