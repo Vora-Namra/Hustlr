@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service("profileService")
 public class ProfileServiceImpl implements ProfileService {
@@ -20,6 +21,8 @@ public class ProfileServiceImpl implements ProfileService {
     @Autowired
     Utilities utilities;
 
+    @Autowired
+    UserRepository userRepository;
 
     @Override
     public String createProfile(String email) throws Exception {
@@ -32,18 +35,17 @@ public class ProfileServiceImpl implements ProfileService {
         profileRepository.save(profile);
         return profile.getId();  // Return the profile ID to associate with the user
     }
- @Autowired
-UserRepository userRepository;
-@Override
-public ProfileDTO getProfileByApplicantId(String applicantId) throws Exception {
-    User user = userRepository.findById(applicantId)
-            .orElseThrow(() -> new Exception("User not found"));
-    if (user.getProfileId() == null) {
-        throw new Exception("User does not have a profile");
+
+    @Override
+    public ProfileDTO getProfileByApplicantId(String applicantId) throws Exception {
+        User user = userRepository.findById(applicantId)
+                .orElseThrow(() -> new Exception("User not found"));
+        if (user.getProfileId() == null) {
+            throw new Exception("User does not have a profile");
+        }
+        return profileRepository.findById(user.getProfileId())
+                .orElseThrow(() -> new Exception("Profile not found")).toDTO();
     }
-    return profileRepository.findById(user.getProfileId())
-            .orElseThrow(() -> new Exception("Profile not found")).toDTO();
-}
 
     @Override
     public ProfileDTO getProfile(String id) throws Exception {
@@ -57,4 +59,10 @@ public ProfileDTO getProfileByApplicantId(String applicantId) throws Exception {
         profileRepository.save(profileDTO.toEntity());
         return profileDTO;
     }
+
+    @Override
+    public List<ProfileDTO> getAllProfile(){
+        return profileRepository.findAll().stream().map((x)->x.toDTO()).toList();
+    }
+
 }

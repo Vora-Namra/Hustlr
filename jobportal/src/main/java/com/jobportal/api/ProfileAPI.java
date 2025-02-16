@@ -4,6 +4,9 @@ package com.jobportal.api;
 import com.jobportal.dto.ProfileDTO;
 import com.jobportal.dto.ResponseDTO;
 import com.jobportal.service.ProfileService;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,16 +35,21 @@ public class ProfileAPI {
         }
     }
 
-    @GetMapping("/applicant/{applicantId}")
-public ResponseEntity<?> getProfileByApplicantId(@PathVariable String applicantId) {
-    try {
-        ProfileDTO profile = profileService.getProfileByApplicantId(applicantId);
-        return ResponseEntity.ok(profile);
-    } catch (Exception e) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+    @GetMapping("/getAll")
+    public ResponseEntity<List<ProfileDTO>> getAllProfile() {
+            return new ResponseEntity<>(profileService.getAllProfile(),HttpStatus.OK);
+        
     }
-}
 
+    @GetMapping("/applicant/{applicantId}")
+    public ResponseEntity<?> getProfileByApplicantId(@PathVariable String applicantId) {
+        try {
+            ProfileDTO profile = profileService.getProfileByApplicantId(applicantId);
+            return ResponseEntity.ok(profile);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
 
     @PutMapping("/update")
     public ResponseEntity<ProfileDTO> updateProfile(@RequestBody ProfileDTO profileDTO) throws Exception {

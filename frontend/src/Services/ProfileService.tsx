@@ -60,4 +60,10 @@ const ProfileCard = ({ applicantId }: { applicantId: any }) => {
   );
 };
 
-export { getProfile, getProfileByApplicantId, updateProfile, ProfileCard };
+const getAllProfiles = async () => {
+  return axios.get(`${base_url}getAll`)
+    .then(res => res.data)
+    .catch(err => { throw err; });
+};
+
+export { getProfile, getProfileByApplicantId, updateProfile, ProfileCard, getAllProfiles };

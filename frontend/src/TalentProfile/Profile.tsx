@@ -10,7 +10,6 @@ import { getProfile } from "../Services/ProfileService";
 function Profile(props: any) {
   const {id} =useParams();
   const [profile,setProfile]= useState<any>({});
-  console.log("Profile props:", props);
   useEffect(()=>{
     window.scrollTo(0,0);
     getProfile(id).then((res)=>{

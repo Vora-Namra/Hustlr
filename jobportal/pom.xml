@@ -63,6 +63,7 @@
 			<artifactId>spring-boot-starter-validation</artifactId>
 		</dependency>
 
+
 		<!-- Mail starter without explicit version (inherited from parent) -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
