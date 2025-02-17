@@ -51,7 +51,7 @@ export const PostedJobDesc=(props:any)=>{
                    arr?.length?arr.map((talent:any, index:any) => (
                     <TalentCard key={index} {...talent} posted/>
 
-                    )):<div className="text-2xl font-semibold">No Applicants</div>
+                    )):<div className="text-2xl   align-items-center text-center  font-semibold">No Applicants</div>
                     }
                     </div>
                   </Tabs.Panel>
@@ -61,7 +61,7 @@ export const PostedJobDesc=(props:any)=>{
                     
                     arr?.length?arr.map((talent:any, index:any) => (
                     <TalentCard key={index} {...talent} invited/>
-                    )):<div className="text-2xl font-semibold">No Invited Candidates</div>
+                    )):<div className="text-2xl font-semibold">No Invited applicants</div>
                     
                     }
                     </div>

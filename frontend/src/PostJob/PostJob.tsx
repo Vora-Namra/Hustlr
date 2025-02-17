@@ -3,15 +3,27 @@ import {content, fields} from "../Data/PostJob";
 import { Button, NumberInput, TagsInput, Textarea } from "@mantine/core";
 import TextEditor from "./TextEditor";
 import { isNotEmpty, useForm } from "@mantine/form";
-import { postJob } from "../Services/JobService";
+import { getJob, postJob } from "../Services/JobService";
 import { errorNotification, successNotification } from "../Services/NotificationService";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { useEffect } from "react";
 
 const PostJob=()=> {
+    const { id } = useParams();
     const user = useSelector((state:any)=>state.user);
     const navigate = useNavigate();
     const select=fields;
+    useEffect(()=>{
+        window.scrollTo(0,0);
+        if(id && id !== "0"){
+            getJob(id).then((res)=>{
+                form.setValues(res);
+            }).catch((err)=>{
+                console.log(err);
+            })
+        }
+    },[id])
     const form = useForm({
         mode:"controlled",
         validateInputOnChange:true,
