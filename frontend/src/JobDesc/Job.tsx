@@ -10,6 +10,8 @@ import { ReactElement, JSXElementConstructor, ReactNode, ReactPortal, Key, useSt
 import { useDispatch, useSelector } from "react-redux"
 import { updateProfile } from "../Services/ProfileService"
 import { setProfile } from "../Slices/ProfileSlice"
+import { postJob } from "../Services/JobService"
+import { errorNotification, successNotification } from "../Services/NotificationService"
 
 export const Job =(props:any)=>{
     const [applied,setApplied] = useState(false);
@@ -48,6 +50,14 @@ export const Job =(props:any)=>{
             setApplied(false);
         }
       },[props])
+
+      const handleClose=()=>{
+        postJob({...props,jobStatus:"CLOSED"}).then((res)=>{
+          successNotification("Success","Job Closed Successfully");
+        }).catch((err)=>{
+          errorNotification("Error",err.response.data.errorMessage);
+        })
+      }
     return(
         <div className="w-2/3">
             <div className='flex justify-between'>
@@ -61,13 +71,13 @@ export const Job =(props:any)=>{
                 </div>
             </div>
             <div className="flex flex-col gap-2 items-center">
-                {(props.edit || !applied) && <Link to={`/apply-job/${props.id}`}>
-                <Button color="brightSun.4" size="sm"  variant="light">{props.edit?"Edit":"Apply"}</Button>
+                {(props.edit || !applied) && <Link to={props.edit?`/post-job/${props.id}`:`/apply-job/${props.id}`}>
+                <Button color="brightSun.4" size="sm"  variant="light">{props.closed?"Reopen":props.edit?"Edit":"Apply"}</Button>
                 </Link>}
                 {
                  !props.edit && applied && <Button color="green.8" size="sm"  variant="light">Applied</Button>  
                 }
-               {props.edit?<Button color="red.5" size="sm"  variant="outline">Delete</Button>: profile.savedJobs && profile.savedJobs.includes(props.id) ? (
+               {props.edit && !props.closed? <Button color="red.5" size="sm" onClick={handleClose}  variant="outline">Close</Button>: profile.savedJobs && profile.savedJobs.includes(props.id) ? (
             <IconBookmarkFilled
               className="text-bright-sun-400 cursor-pointer"
               stroke={1.5}

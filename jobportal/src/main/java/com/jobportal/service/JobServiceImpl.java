@@ -1,9 +1,6 @@
 package com.jobportal.service;
 
-import com.jobportal.dto.ApplicantDTO;
-import com.jobportal.dto.Application;
-import com.jobportal.dto.ApplicationStatus;
-import com.jobportal.dto.JobDTO;
+import com.jobportal.dto.*;
 import com.jobportal.entity.Applicant;
 import com.jobportal.entity.Job;
 import com.jobportal.repository.JobRepository;
@@ -25,8 +22,14 @@ public class JobServiceImpl implements JobService{
 
     @Override
     public JobDTO postJob(JobDTO jobDTO) throws Exception{
-        jobDTO.setId(String.valueOf(utilities.getNextSequence("jobs")));
-        jobDTO.setPostTime(LocalDateTime.now());
+        if(jobDTO.getId()=="0"){
+            jobDTO.setId(String.valueOf(utilities.getNextSequence("jobs")));
+            jobDTO.setPostTime(LocalDateTime.now());
+        }else{
+            Job job = jobRepository.findById(jobDTO.getId()).orElseThrow(()->new Exception("Job not Found"));
+            if(job.getJobStatus().equals(JobStatus.DRAFT) || jobDTO.getJobStatus().equals(JobStatus.CLOSED))
+                jobDTO.setPostTime(LocalDateTime.now());
+        }
         return jobRepository.save(jobDTO.toEntity()).toDTO();
     }
 

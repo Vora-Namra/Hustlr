@@ -1,4 +1,3 @@
-
 import { Tabs } from "@mantine/core"
 import { PostedJobCard } from "./PostedJobCard"
 import { useEffect, useState } from "react"
@@ -22,6 +21,7 @@ export const PostedJob = (props: any) => {
           <Tabs.List className="[&_button[aria-selected='false']]:bg-mine-shaft-950 font-medium">
             <Tabs.Tab value="ACTIVE">Active [{props.jobList?.filter((job: any) => job?.jobStatus === "ACTIVE").length}]</Tabs.Tab>
             <Tabs.Tab value="DRAFT">Drafts [{props.jobList?.filter((job: any) => job?.jobStatus === "DRAFT").length}]</Tabs.Tab>
+            <Tabs.Tab value="CLOSED">Closed [{props.jobList?.filter((job: any) => job?.jobStatus === "CLOSED").length}]</Tabs.Tab>
           </Tabs.List>
 
           <Tabs.Panel value="ACTIVE">
@@ -35,6 +35,13 @@ export const PostedJob = (props: any) => {
             <div className="flex flex-col gap-5 mt-5">
               {
                 props.jobList?.filter((job: any) => job?.jobStatus === "DRAFT").map((item: any, index: any) => <PostedJobCard key={index} {...item} />)
+              }
+            </div>
+          </Tabs.Panel>
+          <Tabs.Panel value="CLOSED">
+            <div className="flex flex-col gap-5 mt-5">
+              {
+                props.jobList?.filter((job: any) => job?.jobStatus === "CLOSED").map((item: any, index: any) => <PostedJobCard key={index} {...item} />)
               }
             </div>
           </Tabs.Panel>
