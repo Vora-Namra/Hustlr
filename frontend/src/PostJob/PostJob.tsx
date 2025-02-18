@@ -7,10 +7,11 @@ import { getJob, postJob } from "../Services/JobService";
 import { errorNotification, successNotification } from "../Services/NotificationService";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const PostJob=()=> {
     const { id } = useParams();
+    const [editorData, setEditorData] = useState(content);
     const user = useSelector((state:any)=>state.user);
     const navigate = useNavigate();
     const select=fields;
@@ -19,9 +20,14 @@ const PostJob=()=> {
         if(id && id !== "0"){
             getJob(id).then((res)=>{
                 form.setValues(res);
+                setEditorData(res.description);
             }).catch((err)=>{
                 console.log(err);
             })
+        }
+        else{
+            form.reset();
+            setEditorData(content);
         }
     },[id])
     const form = useForm({
@@ -56,7 +62,7 @@ const PostJob=()=> {
     const handlePost=()=>{
         const isValid = form.validate();
         if(!isValid.hasErrors){
-            postJob({...form.getValues(),postedBy:user.id,jobStatus:"ACTIVE"}).then((res)=>{
+            postJob({...form.getValues(),id,postedBy:user.id,jobStatus:"ACTIVE"}).then((res)=>{
                 successNotification("Success","Job Posted Successfully");
                 navigate(`/posted-job/${res.id}`)
             }).catch((err)=>{
@@ -103,7 +109,7 @@ const PostJob=()=> {
                   />
             <div className="[&_button[data-active='true']]:!text-bright-sun-400 [&_button[data-active='true']]:!bg-bright-sun-400/20" >
                 <div className="text-sm font-medium">Job Description <span className="text-red-500">*</span></div>
-                <TextEditor form={form}/>
+                <TextEditor form={form} data={editorData}/>
             </div>
             <div className="flex gap-4">
             <Button color="brightSun.4" onClick={handlePost}  variant="light">Publish Job</Button>
