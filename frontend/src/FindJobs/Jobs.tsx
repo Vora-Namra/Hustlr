@@ -2,22 +2,19 @@ import { Sort } from './Sort';
 import JobCard from './JobCard';
 import { useEffect, useState } from 'react';
 import { getAllJobs } from '../Services/JobService';
+import { useDispatch, useSelector } from 'react-redux';
+import { resetFilter } from '../Slices/FilterSlice';
 
 function Jobs() {
-  const [jobList, setJobList] = useState<any[]>([]);
+  const dispatch = useDispatch();
+  const [jobList, setJobList] = useState([{}]);
+  const filter = useSelector((state:any)=>state.filter);
+  const [filteredJobs,setFilteredJobs] = useState<any>([]);
 
   useEffect(() => {
-    getAllJobs()
-      .then((res) => {
-        console.log('Fetched Jobs:', res); // Debugging step
-        // Normalize data: Ensure applicants is always an array
-        const normalizedJobs = Array.isArray(res)
-          ? res.map((job) => ({
-              ...job,
-              applicants: job.applicants || [], // Default to empty array if null/undefined
-            }))
-          : [];
-        setJobList(normalizedJobs);
+    dispatch(resetFilter());
+    getAllJobs().then((res) => {
+        setJobList(res.filter((job: { jobStatus: string }) => job.jobStatus == 'ACTIVE'));
       })
       .catch((err) => {
         console.error('Error fetching jobs:', err);

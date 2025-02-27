@@ -12,7 +12,7 @@ function Talents() {
   const [filteredTalents,setFilteredTalents] = useState<any>([]);
   useEffect(()=>{
    dispatch(resetFilter());
-    getAllProfiles().then((res)=>{
+    getAllProfiles().then((res)=>{  
       setTalents(res);
     }).catch((err)=>{
       throw err;
