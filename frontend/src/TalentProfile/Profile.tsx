@@ -3,7 +3,6 @@ import { IconBriefcase, IconMapPin } from "@tabler/icons-react";
 import ExpCard from "./ExpCard";
 import CertiCard from "./CertiCard";
 import { useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { getProfile } from "../Services/ProfileService";
 
@@ -39,6 +38,10 @@ function Profile(props: any) {
         <div className="flex gap-1 text-sm mt-1 items-center text-mine-shaft-400">
           <IconMapPin className="h-5 w-5" stroke={1.5} />
           {profile?.location || "Not specified"}
+        </div>
+        <div className="flex gap-1 text-sm mt-1 items-center text-mine-shaft-400">
+          <IconBriefcase className="h-5 w-5" stroke={1.5} />Experience:
+          {profile?.totalExp || "Not specified"}
         </div>  
       </div>
       <Divider size="xs" my="md" color="mineShaft.7" />

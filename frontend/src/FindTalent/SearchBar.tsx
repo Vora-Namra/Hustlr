@@ -8,7 +8,7 @@ import { useDispatch } from 'react-redux';
 
 function SearchBar() {
   const dispatch = useDispatch();
-  const [value, setValue] = useState<[number, number]>([0, 50]);
+  const [value, setValue] = useState<[number, number]>([0, 100]);
   const [name,setName] = useState('');
   const handleChange=(name:any,event:any)=>{
     if(name=="exp"){
@@ -50,7 +50,7 @@ function SearchBar() {
           size="xs"
           color="brightSun.4"
           value={value}
-          max={50}
+          max={100}
           min={0}
           onChangeEnd={(e)=>handleChange("exp",e)}
           onChange={setValue}

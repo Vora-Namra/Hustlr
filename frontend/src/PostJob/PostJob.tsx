@@ -12,7 +12,13 @@ import { useEffect, useState } from "react";
 const PostJob=()=> {
     const { id } = useParams();
     const [editorData, setEditorData] = useState(content);
-    const user = useSelector((state:any)=>state.user);
+    interface RootState {
+        user: {
+            id: string;
+            // Add other user properties here
+        };
+    }
+    const user = useSelector((state: RootState) => state.user);
     const navigate = useNavigate();
     const select=fields;
     useEffect(()=>{
@@ -59,46 +65,75 @@ const PostJob=()=> {
 
         }
     });
-    const handlePost=()=>{
+    
+    const handlePost = async () => {
         const isValid = form.validate();
-        if(!isValid.hasErrors){
-            postJob({...form.getValues(),id,postedBy:user.id,jobStatus:"ACTIVE"}).then((res)=>{
-                successNotification("Success","Job Posted Successfully");
-                navigate(`/posted-job/${res.id}`)
-            }).catch((err)=>{
-                console.log(err);
-                errorNotification("Failed",err.response.data.errorMessage);
-            })
+        if (!isValid.hasErrors) {
+            try {
+                const jobData = {
+                    ...form.values,
+                    id: id || "0",
+                    postedBy: user.id,
+                    jobStatus: "ACTIVE",
+                    title: form.values.jobTitle,
+                    salary: Number(form.values.packageOffered)
+                };
+                
+                const res = await postJob(jobData);
+                successNotification("Success", "Job Posted Successfully");
+                navigate(`/posted-job/${res.id}`);
+            } catch (err: unknown) {
+                console.error(err);
+                errorNotification(
+                    "Failed", 
+                    (err as any)?.response?.data?.message || "Failed to post job"
+                );
+            }
         }
-    }
-    const handleDraft=()=>{
+    };
+    
+    const handleDraft = async () => {
         const isValid = form.validate();
-        if(!isValid.hasErrors){
-            postJob({...form.getValues(),postedBy:user.id,jobStatus:"DRAFT"}).then((res)=>{
-                successNotification("Success","Job Drafted Successfully");
-                navigate(`/posted-job/${res.id}`)
-            }).catch((err)=>{
-                console.log(err);
-                errorNotification("Failed",err.response.data.errorMessage);
-            })
+        if (!isValid.hasErrors) {
+            try {
+                const jobData = {
+                    ...form.values,
+                    id: id || "0",
+                    title: form.values.jobTitle,
+                    salary: Number(form.values.packageOffered),
+                    jobStatus: "DRAFT",
+                    description: editorData
+                };
+                
+                const res = await postJob(jobData);
+                successNotification("Success", "Job Drafted Successfully");
+                navigate(`/posted-job/${res.id}`);
+            } catch (err: unknown) {
+                console.error(err);
+                errorNotification(
+                    "Failed", 
+                    err.response?.data?.message || "Failed to save draft"
+                );
+            }
         }
-    }
-    return <div className="w-4/5 mx-auto">
-       <div className="text-2xl font-semibold mb-5">Post a Job</div>
-       <div className="flex flex-col gap-5">
-            <div className="flex gap-10 [&>*]:w-1/2">
-                <SelectInput form={form} name="jobTitle" {...select[0]}/>
-                <SelectInput form={form} name="company" {...select[1]}/>
-            </div>
-            <div className="flex gap-10 [&>*]:w-1/2">
-                <SelectInput form={form} name="experience" {...select[2]}/>
-                <SelectInput form={form} name="jobType" {...select[3]}/>
-            </div>
-            <div className="flex gap-10 [&>*]:w-1/2">
-                <SelectInput form={form} name="location" {...select[4]}/>
-                <NumberInput {...form.getInputProps('packageOffered')} label="salary" withAsterisk min={1} clampBehavior="strict" max={300} placeholder="Enter Salary in Lakhs" hideControls/>
-            </div>
-            <TagsInput {...form.getInputProps('skillsRequired')} withAsterisk label="Skills" placeholder="Enter skill" splitChars={[',', ' ', '|']} clearable acceptValueOnBlur />
+    };
+    
+        return <div className="w-4/5 mx-auto">
+           <div className="text-2xl font-semibold mb-5">Post a Job</div>
+           <div className="flex flex-col gap-5">
+                <div className="flex gap-10 [&>*]:w-1/2">
+                    <SelectInput form={form} name="jobTitle" {...select[0]}/>
+                    <SelectInput form={form} name="company" {...select[1]}/>
+                </div>
+                <div className="flex gap-10 [&>*]:w-1/2">
+                    <SelectInput form={form} name="experience" {...select[2]}/>
+                    <SelectInput form={form} name="jobType" {...select[3]}/>
+                </div>
+                <div className="flex gap-10 [&>*]:w-1/2">
+                    <SelectInput form={form} name="location" {...select[4]}/>
+                    <NumberInput {...form.getInputProps('packageOffered')} label="salary" withAsterisk min={1} clampBehavior="strict" max={300} placeholder="Enter Salary in Lakhs" hideControls/>
+                </div>
+                <TagsInput {...form.getInputProps('skillsRequired')} withAsterisk label="Skills" placeholder="Enter skill" splitChars={[',', ' ', '|']} clearable acceptValueOnBlur />
             <Textarea
                     {...form.getInputProps("about")}
                     withAsterisk
@@ -119,4 +154,4 @@ const PostJob=()=> {
     </div>
     
 }
-export default PostJob;
+export default PostJob;        

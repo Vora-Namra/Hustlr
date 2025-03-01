@@ -1,4 +1,4 @@
-import { ActionIcon, Button } from "@mantine/core";
+import { ActionIcon} from "@mantine/core";
 import { IconBriefcase, IconCheck, IconPencil, IconX, IconMapPin, IconUserPin } from "@tabler/icons-react";
 import SelectInput from "./SelectInput";
 import fields from "../Data/Profile";
@@ -26,10 +26,10 @@ const Info = () => {
     if (!edit) {
       setEdit(true);
       form.setValues({
-        jobTitle: profile.jobTitle,
-        company: profile.company,
-        location: profile.location,
-        totalExp: profile.totalExp || 0,
+        'jobTitle': profile.jobTitle,
+        'company': profile.company,
+        'location': profile.location,
+        'totalExp': profile.totalExp || 0,
       });
     } else {
       setEdit(false);
@@ -69,9 +69,11 @@ const Info = () => {
             <NumberInput
               {...form.getInputProps("totalExp")}
               label="Total Experience (years)"
+              hideControls
+              clampBehavior="strict"
               placeholder="Enter total experience"
               withAsterisk
-              min={0}
+              min={1} max={40}
             />
           </div>
         </>
