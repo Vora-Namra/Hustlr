@@ -3,6 +3,7 @@ package com.jobportal.utility;
 import com.jobportal.entity.Counter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
+import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -13,11 +14,12 @@ import java.security.SecureRandom;
 
 @Component
 public class Utilities {
+    private static MongoOperations mongoOperation;
 
     @Autowired
-    private MongoTemplate mongoTemplate;
+    private static MongoTemplate mongoTemplate;
 
-    public Long getNextSequence(String seqName) {
+    public static Long getNextSequence(String seqName) {
         Query query = new Query(Criteria.where("_id").is(seqName));
         Update update = new Update().inc("seq", 1);
         FindAndModifyOptions options = new FindAndModifyOptions().returnNew(true).upsert(true);

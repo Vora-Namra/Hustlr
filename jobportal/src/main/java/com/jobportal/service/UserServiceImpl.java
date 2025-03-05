@@ -1,11 +1,13 @@
 package com.jobportal.service;
 
 import com.jobportal.dto.LoginDTO;
+import com.jobportal.dto.NotificationDTO;
 import com.jobportal.dto.ResponseDTO;
 import com.jobportal.dto.UserDTO;
 import com.jobportal.entity.Data;
 import com.jobportal.entity.OTP;
 import com.jobportal.entity.User;
+import com.jobportal.repository.NotificationRepository;
 import com.jobportal.repository.OTPRepository;
 import com.jobportal.repository.UserRepository;
 import com.jobportal.utility.Utilities;
@@ -43,6 +45,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private JavaMailSender mailSender;
+
+    @Autowired
+    private NotificationService notificationService;
 
     @Override
     public UserDTO registerUser(UserDTO userDTO) throws Exception {
@@ -159,6 +164,12 @@ public class UserServiceImpl implements UserService {
         // Encode and save the new password
         user.setPassword(passwordEncoder.encode(loginDTO.getPassword()));
         userRepository.save(user);
+
+        NotificationDTO noti=new NotificationDTO();
+        noti.setId(Long.valueOf(user.getId()));
+        noti.setMessage("Password Reset successfull");
+        noti.setAction("Password Reset");
+        notificationService.sendNotification(noti);
 
         // Optionally send a confirmation email or log the event
         return new ResponseDTO("Password changed successfully");
