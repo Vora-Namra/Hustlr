@@ -1,39 +1,36 @@
-
 import { useState } from 'react';
 import { MultiInput } from './MultiInput';
 import { dropdownData } from '../Data/JobsData';
 import { Divider, RangeSlider } from '@mantine/core';
 import React from 'react';
-import { useDispatch } from 'react-redux';
-import { updateFilter } from '../Slices/FilterSlice';
 
 function SearchBar() {
-  const dispatch = useDispatch();
-  const [value, setValue] = useState<[number, number]>([0, 100]);
-  const handleChange=(event:any)=>{
-      dispatch(updateFilter({salary:event}))
-    }
+  const [value, setValue] = useState<[number, number]>([2, 100]);
+
   return (
-    <div className="flex py-5 px-8 gap-2">
+    <div className="flex flex-col md:flex-row py-3 md:py-5 px-3 md:px-8 gap-3 md:gap-2">
       {dropdownData.map((item, index) => (
         <React.Fragment key={index}>
-          <div className="w-1/5">
+          <div className="w-full md:w-1/5">
             <MultiInput options={item.options} title={item.title} icon={item.icon} />
           </div>
-          <Divider size="xs" orientation="vertical" />
+          {index < dropdownData.length - 1 && (
+            <Divider size="xs" orientation="vertical" className="hidden md:block" />
+          )}
         </React.Fragment>
       ))}
-      <div className="w-1/5 [&_.mantine-Slider-label]:!translate-y-10">
-        <div className="flex text-sm justify-between">
+      <div className="w-full md:w-1/5 [&_.mantine-Slider-label]:!translate-y-10">
+        <div className="flex text-xs md:text-sm justify-between">
           <div>Salary</div>
           <div>&#8377;{value[0]} Lpa - &#8377;{value[1]} Lpa</div>
         </div>
-        <RangeSlider className="mt-1" color="brightSun.4" value={value}
-          max={100}
-          min={0}
-          onChangeEnd={handleChange}
+        <RangeSlider
+          className="mt-1"
+          size="xs"
+          color="brightSun.4"
+          value={value}
           onChange={setValue}
-          step={1}
+          labelAlwaysOn
         />
       </div>
     </div>
