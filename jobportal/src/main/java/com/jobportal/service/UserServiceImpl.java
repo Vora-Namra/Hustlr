@@ -1,5 +1,15 @@
 package com.jobportal.service;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
 import com.jobportal.dto.LoginDTO;
 import com.jobportal.dto.NotificationDTO;
 import com.jobportal.dto.ResponseDTO;
@@ -7,20 +17,12 @@ import com.jobportal.dto.UserDTO;
 import com.jobportal.entity.Data;
 import com.jobportal.entity.OTP;
 import com.jobportal.entity.User;
-import com.jobportal.repository.NotificationRepository;
 import com.jobportal.repository.OTPRepository;
 import com.jobportal.repository.UserRepository;
 import com.jobportal.utility.Utilities;
+
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import java.time.LocalDateTime;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -166,7 +168,7 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
 
         NotificationDTO noti=new NotificationDTO();
-        noti.setId(Long.valueOf(user.getId()));
+        noti.setUserId(Long.valueOf(user.getId()));
         noti.setMessage("Password Reset successfull");
         noti.setAction("Password Reset");
         notificationService.sendNotification(noti);
