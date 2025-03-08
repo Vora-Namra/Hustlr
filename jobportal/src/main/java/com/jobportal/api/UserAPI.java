@@ -1,4 +1,3 @@
-
 package com.jobportal.api;
 import com.jobportal.dto.LoginDTO;
 import com.jobportal.dto.ResponseDTO;
@@ -12,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.Map;
 
 
@@ -25,9 +25,15 @@ public class UserAPI {
     private UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<UserDTO> registerUser(@RequestBody UserDTO userDTO) throws Exception {
-        userDTO = userService.registerUser(userDTO);
-        return new ResponseEntity<>(userDTO, HttpStatus.CREATED);
+    public ResponseEntity<?> registerUser(@Valid @RequestBody UserDTO userDTO) {
+        try {
+            UserDTO registeredUser = userService.registerUser(userDTO);
+            return new ResponseEntity<>(registeredUser, HttpStatus.CREATED);
+        } catch (Exception e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("errorMessage", e.getMessage());
+            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        }
     }
 
 

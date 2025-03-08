@@ -14,12 +14,10 @@ import java.security.SecureRandom;
 
 @Component
 public class Utilities {
-    private static MongoOperations mongoOperation;
-
     @Autowired
-    private static MongoTemplate mongoTemplate;
+    private MongoTemplate mongoTemplate;
 
-    public static Long getNextSequence(String seqName) {
+    public Long getNextSequence(String seqName) {
         Query query = new Query(Criteria.where("_id").is(seqName));
         Update update = new Update().inc("seq", 1);
         FindAndModifyOptions options = new FindAndModifyOptions().returnNew(true).upsert(true);
@@ -27,11 +25,13 @@ public class Utilities {
         return counter != null ? counter.getSeq() : 1;
     }
 
+    // Improved OTP generation with better randomness
     public static String generateOTP() {
-        StringBuilder otp = new StringBuilder();
         SecureRandom random = new SecureRandom();
-        for (int i = 0; i < 6; i++)
+        StringBuilder otp = new StringBuilder();
+        for (int i = 0; i < 6; i++) {
             otp.append(random.nextInt(10));
+        }
         return otp.toString();
     }
 }

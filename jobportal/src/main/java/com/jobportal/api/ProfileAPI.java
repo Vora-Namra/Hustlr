@@ -12,12 +12,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:5173")
 @Validated
 @RequestMapping("/profiles")
 public class ProfileAPI {
+
+    private static final Logger log = LoggerFactory.getLogger(ProfileAPI.class);
 
     @Autowired
     ProfileService profileService;
@@ -52,7 +56,15 @@ public class ProfileAPI {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<ProfileDTO> updateProfile(@RequestBody ProfileDTO profileDTO) throws Exception {
-        return new ResponseEntity<>(profileService.updateProfile(profileDTO), HttpStatus.OK);
+    public ResponseEntity<?> updateProfile(@RequestBody ProfileDTO profileDTO) {
+        try {
+            ProfileDTO updatedProfile = profileService.updateProfile(profileDTO);
+            return ResponseEntity.ok(updatedProfile);
+        } catch (Exception e) {
+            log.error("Error updating profile: {}", e.getMessage());
+            return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ResponseDTO(e.getMessage()));
+        }
     }
 }

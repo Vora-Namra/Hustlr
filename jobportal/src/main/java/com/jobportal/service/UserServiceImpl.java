@@ -1,17 +1,6 @@
 package com.jobportal.service;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-
 import com.jobportal.dto.LoginDTO;
-import com.jobportal.dto.NotificationDTO;
 import com.jobportal.dto.ResponseDTO;
 import com.jobportal.dto.UserDTO;
 import com.jobportal.entity.Data;
@@ -20,9 +9,16 @@ import com.jobportal.entity.User;
 import com.jobportal.repository.OTPRepository;
 import com.jobportal.repository.UserRepository;
 import com.jobportal.utility.Utilities;
-
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import java.time.LocalDateTime;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -35,12 +31,10 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private OTPRepository otpRepository;
 
-    private final ProfileService profileService;
-
     @Autowired
-    public UserServiceImpl(ProfileService profileService) {
-        this.profileService = profileService;
-    }
+    private Utilities utilities;
+
+    private final ProfileService profileService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -49,31 +43,49 @@ public class UserServiceImpl implements UserService {
     private JavaMailSender mailSender;
 
     @Autowired
-    private NotificationService notificationService;
+    public UserServiceImpl(ProfileService profileService) {
+        this.profileService = profileService;
+    }
 
     @Override
     public UserDTO registerUser(UserDTO userDTO) throws Exception {
-        // Create the user
-        User user = new User();
-        user.setName(userDTO.getName());
-        user.setEmail(userDTO.getEmail());
+        // Check if email already exists
+        if (userRepository.findByEmail(userDTO.getEmail()).isPresent()) {
+            throw new RuntimeException("Email already registered");
+        }
 
-        // Encode password before saving
-        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        try {
+            // Create the user
+            User user = new User();
+            user.setId(String.valueOf(utilities.getNextSequence("users")));
+            user.setName(userDTO.getName());
+            user.setEmail(userDTO.getEmail());
 
-        user.setAccountType(userDTO.getAccountType());
-        user = userRepository.save(user);
+            // Validate password strength
+            validatePassword(userDTO.getPassword());
 
-        // Create a profile for the user
-        String profileId = profileService.createProfile(userDTO.getEmail());  // Create profile with email
+            // Encode password before saving
+            user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+            user.setAccountType(userDTO.getAccountType());
+            user = userRepository.save(user);
 
-        // Associate the profile ID with the user
-        user.setProfileId(profileId);
+            // Create a profile for the user
+            String profileId = profileService.createProfile(userDTO.getEmail());
 
-        // Save the updated user with the profileId
-        user = userRepository.save(user);
+            // Associate the profile ID with the user
+            user.setProfileId(profileId);
 
-        return user.toDTO();
+            // Save the updated user with the profileId
+            user = userRepository.save(user);
+
+            UserDTO responseDTO = user.toDTO();
+            responseDTO.setPassword(null); // Don't send password back to client
+            return responseDTO;
+            
+        } catch (Exception e) {
+            log.error("Error registering user: {}", e.getMessage());
+            throw new RuntimeException("Error registering user: " + e.getMessage());
+        }
     }
 
     @Override
@@ -166,12 +178,6 @@ public class UserServiceImpl implements UserService {
         // Encode and save the new password
         user.setPassword(passwordEncoder.encode(loginDTO.getPassword()));
         userRepository.save(user);
-
-        NotificationDTO noti=new NotificationDTO();
-        noti.setUserId(Long.valueOf(user.getId()));
-        noti.setMessage("Password Reset successfull");
-        noti.setAction("Password Reset");
-        notificationService.sendNotification(noti);
 
         // Optionally send a confirmation email or log the event
         return new ResponseDTO("Password changed successfully");
