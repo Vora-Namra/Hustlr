@@ -30,7 +30,13 @@ public class NotificationServiceImpl  implements NotificationService {
 
     @Override
     public List<Notification> getUnreadNotifications(String userId) {
-        Long userIdLong = Long.parseLong(userId);
-        return notificationRepository.findByUserIdAndStatus(userIdLong, NotificationStatus.UNREAD);
+        return notificationRepository.findByUserIdAndStatus(userId, NotificationStatus.UNREAD);
+    }
+
+    @Override
+    public void readNotification(String id) {
+        Notification notification = notificationRepository.findById(id).orElseThrow(()->new RuntimeException("Notification not found"));
+        notification.setStatus(NotificationStatus.READ);
+        notificationRepository.save(notification);
     }
 }

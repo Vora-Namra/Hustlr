@@ -7,6 +7,7 @@ import { ProfileMenu } from './ProfileMenu'
 import { useDispatch, useSelector } from 'react-redux'
 import { getProfile } from '../Services/ProfileService'
 import { setProfile } from '../Slices/ProfileSlice'
+import NotificationMenu from './NotificationMenu'
 
 function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -53,12 +54,15 @@ function Header() {
             </Button>
           </Link>
         )}
-
-        <div className='bg-mine-shaft-900 p-1.5 rounded-full'>
+        {user?<NotificationMenu/>:<></>}
+        {/* <div className='bg-mine-shaft-900 p-1.5 rounded-full'>
           <Indicator color="brightSun.4" size={8} offset={6} processing>
             <IconBell stroke={1.5} className='h-5 w-5 md:h-6 md:w-6' />
           </Indicator>
-        </div>
+        </div> */}
+
+
+
         {/* Mobile Menu Button */}
         <Button
           variant='subtle'

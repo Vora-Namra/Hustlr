@@ -8,5 +8,5 @@ import com.jobportal.dto.NotificationStatus;
 import com.jobportal.entity.Notification;
 
 public interface NotificationRepository extends MongoRepository<Notification, String> {
-    public List<Notification> findByUserIdAndStatus(Long userId, NotificationStatus status);
+    public List<Notification> findByUserIdAndStatus(String userId, NotificationStatus status);
 }

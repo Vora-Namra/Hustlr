@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @Document(collection = "notification")
 public class Notification {
     private String id;
-    private Long userId;
+    private String  userId;
     private String message;
     private String action;
     private String route;
