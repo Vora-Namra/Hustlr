@@ -1,4 +1,3 @@
-
 import { Button, Checkbox, Textarea } from "@mantine/core";
 import fields from "../Data/Profile";
 import SelectInput from "./SelectInput";
@@ -8,11 +7,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { isNotEmpty, useForm } from "@mantine/form";
 import { changeProfile } from "../Slices/ProfileSlice";
 import { successNotification } from "../Services/NotificationService";
+import { updateProfile } from "../Services/ProfileService";
 
 export const ExpInput = (props: any) => {
   const select = fields;
   const dispatch = useDispatch();
   const profile = useSelector((state: any) => state.profile);
+  const [loading, setLoading] = useState(false);
 
   const [checked, setChecked] = useState(props.working || false);
 
@@ -52,33 +53,46 @@ export const ExpInput = (props: any) => {
   }, [props]);
 
   // **Handle Save**
-  const handleSave = () => {
+  const handleSave = async () => {
     form.validate();
-    if (!form.isValid()) return;
+    if (!form.isValid() || !profile) return;
 
-    let updatedExperience = {
-      title: form.values.title,
-      company: form.values.company,
-      location: form.values.location,
-      description: form.values.description, // Use form.values instead of separate state
-      startDate: form.values.startDate.toISOString(),
-      endDate: checked ? null : form.values.endDate.toISOString(),
-      working: checked,
-    };
+    setLoading(true);
+    try {
+      let updatedExperience = {
+        title: form.values.title,
+        company: form.values.company,
+        location: form.values.location,
+        description: form.values.description,
+        startDate: form.values.startDate.toISOString(),
+        endDate: checked ? null : form.values.endDate.toISOString(),
+        working: checked,
+      };
 
-    let exp = [...profile.experiences];
+      let exp = [...profile.experiences];
 
-    if (props.add) {
-      exp.push(updatedExperience); // Add new experience
-    } else {
-      exp[props.index] = updatedExperience; // Update existing experience
+      if (props.add) {
+        exp.push(updatedExperience); // Add new experience
+      } else {
+        exp[props.index] = updatedExperience; // Update existing experience
+      }
+
+      let updatedProfile = { ...profile, experiences: exp };
+
+      // Send update to backend
+      const response = await updateProfile(updatedProfile);
+      
+      // Update Redux state with response from backend
+      dispatch(changeProfile(response));
+      
+      props.setEdit(false);
+      successNotification("Success", `Experience ${props.add ? "Added" : "Updated"} Successfully`);
+    } catch (error) {
+      console.error("Error saving experience:", error);
+      // You might want to add error notification here
+    } finally {
+      setLoading(false);
     }
-
-    let updatedProfile = { ...profile, experiences: exp };
-
-    dispatch(changeProfile(updatedProfile));
-    props.setEdit(false);
-    successNotification("Success", `Experience ${props.add ? "Added" : "Updated"} Successfully`);
   };
 
   return (
@@ -90,7 +104,6 @@ export const ExpInput = (props: any) => {
       </div>
       <SelectInput form={form} name="location" {...select[2]} />
       
-      {/* FIXED: Bind Textarea directly to form.values.description */}
       <Textarea
         {...form.getInputProps("description")}
         withAsterisk
@@ -98,6 +111,7 @@ export const ExpInput = (props: any) => {
         placeholder="Enter Summary"
         autosize
         minRows={3}
+        disabled={loading}
       />
 
       <div className="flex gap-10 [&>*]:w-1/2">
@@ -107,10 +121,11 @@ export const ExpInput = (props: any) => {
           maxDate={new Date()}
           label="Start Date"
           placeholder="Pick date"
+          disabled={loading}
         />
         <MonthPickerInput
           {...form.getInputProps("endDate")}
-          disabled={checked}
+          disabled={checked || loading}
           withAsterisk
           minDate={form.values.startDate || undefined}
           maxDate={new Date()}
@@ -122,12 +137,23 @@ export const ExpInput = (props: any) => {
         checked={checked}
         onChange={(event) => setChecked(event.currentTarget.checked)}
         label="Currently working here"
+        disabled={loading}
       />
       <div className="flex gap-5">
-        <Button onClick={handleSave} color="green.8" variant="light">
+        <Button 
+          onClick={handleSave} 
+          color="green.8" 
+          variant="light"
+          loading={loading}
+        >
           Save
         </Button>
-        <Button onClick={() => props.setEdit(false)} color="red.8" variant="light">
+        <Button 
+          onClick={() => props.setEdit(false)} 
+          color="red.8" 
+          variant="light"
+          disabled={loading}
+        >
           Cancel
         </Button>
       </div>

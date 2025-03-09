@@ -1,28 +1,58 @@
 import { Divider } from "@mantine/core";
 import Profile from "../Profile/Profile";
+import { useDispatch } from "react-redux";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { setProfile } from "../Slices/ProfileSlice";
+import { getProfile } from "../Services/ProfileService";
 
 export const ProfilePage = () => {
-  const mockData = {
-    name: "John Doe",
-    role: "Software Engineer",
-    company: "TechCorp",
-    location: "San Francisco, CA",
-    about: "Passionate developer with 5+ years of experience.",
-    skills: ["JavaScript", "React", "Node.js"],
-    experience: [
-      { id: 1, title: "Frontend Developer", company: "WebTech", years: "2020-2023" },
-      { id: 2, title: "Backend Developer", company: "CodeBase", years: "2018-2020" },
-    ],
-    certifications: [
-      { id: 1, name: "AWS Certified Developer", date: "2023" },
-      { id: 2, name: "Scrum Master Certification", date: "2022" },
-    ],
+  const dispatch = useDispatch();
+  const user = useSelector((state: any) => state.user);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Removed mockData as it was causing confusion with real data
+
+  const handleProfileUpdate = (updatedProfile: any) => {
+    // Dispatch the updated profile to Redux
+    dispatch(setProfile(updatedProfile));
   };
+
+  useEffect(() => {
+    // Fetch the profile data when the component mounts
+    if (user?.profileId) {
+      setLoading(true);
+      setError(null);
+      
+      getProfile(user.profileId)
+        .then((data) => {
+          handleProfileUpdate(data);
+        })
+        .catch((err) => {
+          console.error("Error fetching profile:", err);
+          setError("Failed to load profile data");
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
+  }, [user?.profileId, dispatch]);
 
   return (
     <div className="min-h-[90vh] bg-mine-shaft-950 font-['poppins']">
       <Divider mx="md" mb="xl" />
-      <Profile {...mockData} />
+      {loading ? (
+        <div className="flex justify-center items-center h-64">
+          <p>Loading profile...</p>
+        </div>
+      ) : error ? (
+        <div className="flex justify-center items-center h-64 text-red-500">
+          <p>{error}</p>
+        </div>
+      ) : (
+        <Profile />
+      )}
     </div>
   );
 };

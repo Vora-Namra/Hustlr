@@ -65,7 +65,7 @@ const NotificationMenu = () => {
             <Menu shadow="md" width={300} opened={opened} onChange={setOpened}>
                 <Menu.Target>
                     <div className='bg-mine-shaft-900 p-1.5 rounded-full'>
-                        <Indicator color="brightSun.4" size={8} offset={6} processing={loading}>
+                        <Indicator disabled={notifications.length <= 0} color="brightSun.4" size={8} offset={6} processing={loading}>
                             <IconBell stroke={1.5} className='h-5 w-5 md:h-6 md:w-6' />
                         </Indicator>
                     </div>

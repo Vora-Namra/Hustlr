@@ -12,6 +12,7 @@ import com.jobportal.dto.Application;
 import com.jobportal.dto.ApplicationStatus;
 import com.jobportal.dto.JobDTO;
 import com.jobportal.dto.JobStatus;
+import com.jobportal.dto.NotificationDTO;
 import com.jobportal.entity.Applicant;
 import com.jobportal.entity.Job;
 import com.jobportal.repository.JobRepository;
@@ -21,6 +22,11 @@ import com.jobportal.utility.Utilities;
 public class JobServiceImpl implements JobService{
     @Autowired
     private JobRepository jobRepository;
+
+
+    @Autowired
+    private NotificationService notificationService;
+
 
     @Autowired
     Utilities utilities;
@@ -91,6 +97,19 @@ public class JobServiceImpl implements JobService{
                     x.setApplicationStatus(application.getApplicationStatus());
                     if (application.getApplicationStatus().equals(ApplicationStatus.INTERVIEWING)) {
                         x.setInterviewTime(application.getInterviewTime());
+                        if(application.getApplicationStatus().equals(ApplicationStatus.INTERVIEWING)){
+                            x.setInterviewTime(application.getInterviewTime());
+                            NotificationDTO notificationDTO = new NotificationDTO();
+                            notificationDTO.setMessage("You have been selected for the interview : "+application.getId());
+                            notificationDTO.setAction("Interview Schedules");
+                            notificationDTO.setUserId(application.getApplicantId());
+                            notificationDTO.setRoute("/job-history");
+                           try{
+                            notificationService.sendNotification(notificationDTO);
+                           } catch (Exception e) {
+                            e.printStackTrace();
+                           }
+                        }
                     }
                 }
                 return x;

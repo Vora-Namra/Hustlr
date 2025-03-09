@@ -1,8 +1,6 @@
-
 package com.jobportal.service;
 
 import com.jobportal.dto.LoginDTO;
-import com.jobportal.dto.NotificationDTO;
 import com.jobportal.dto.ResponseDTO;
 import com.jobportal.dto.UserDTO;
 import com.jobportal.entity.Data;
@@ -33,24 +31,18 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private OTPRepository otpRepository;
 
-    @Autowired
-    private Utilities utilities;
-
-    @Autowired
-    NotificationService notificationService;
-
     private final ProfileService profileService;
+
+    @Autowired
+    public UserServiceImpl(ProfileService profileService) {
+        this.profileService = profileService;
+    }
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired
     private JavaMailSender mailSender;
-
-    @Autowired
-    public UserServiceImpl(ProfileService profileService) {
-        this.profileService = profileService;
-    }
 
     @Override
     public UserDTO registerUser(UserDTO userDTO) throws Exception {
@@ -62,7 +54,6 @@ public class UserServiceImpl implements UserService {
         try {
             // Create the user
             User user = new User();
-            user.setId(String.valueOf(utilities.getNextSequence("users")));
             user.setName(userDTO.getName());
             user.setEmail(userDTO.getEmail());
 
@@ -88,7 +79,6 @@ public class UserServiceImpl implements UserService {
             return responseDTO;
             
         } catch (Exception e) {
-            log.error("Error registering user: {}", e.getMessage());
             throw new RuntimeException("Error registering user: " + e.getMessage());
         }
     }
@@ -183,11 +173,6 @@ public class UserServiceImpl implements UserService {
         // Encode and save the new password
         user.setPassword(passwordEncoder.encode(loginDTO.getPassword()));
         userRepository.save(user);
-        NotificationDTO notificationDTO = new NotificationDTO();
-        notificationDTO.setUserId(user.getId());
-        notificationDTO.setMessage("Password changed successfully");
-        notificationDTO.setAction("Password Reset");
-        notificationService.sendNotification(notificationDTO);
 
         // Optionally send a confirmation email or log the event
         return new ResponseDTO("Password changed successfully");

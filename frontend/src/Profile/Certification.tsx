@@ -6,20 +6,39 @@ import CertiCard from "./CertiCard";
 import { CertiInput } from "./CertiInput";
 import { changeProfile } from "../Slices/ProfileSlice";
 import { successNotification } from "../Services/NotificationService";
+import { updateProfile } from "../Services/ProfileService";
 
 const Certification = () => {
   const [addCerti, setAddCerti] = useState(false);
   const [edit, setEdit] = useState(false);
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const profile = useSelector((state: any) => state.profile);
 
-  // 🔥 Delete Certification
-  const handleDelete = (index: number) => {
-    let updatedCertifications = [...profile.certifications];
-    updatedCertifications.splice(index, 1); // Remove the certification
+  // Delete Certification
+  const handleDelete = async (index: number) => {
+    if (!profile) return;
 
-    dispatch(changeProfile({ ...profile, certifications: updatedCertifications }));
-    successNotification("Success", "Certification removed successfully");
+    setLoading(true);
+    try {
+      let updatedCertifications = [...profile.certifications];
+      updatedCertifications.splice(index, 1); // Remove the certification
+
+      const updatedProfile = { ...profile, certifications: updatedCertifications };
+      
+      // Send update to backend
+      const response = await updateProfile(updatedProfile);
+      
+      // Update Redux state with response from backend
+      dispatch(changeProfile(response));
+      
+      successNotification("Success", "Certification removed successfully");
+    } catch (error) {
+      console.error("Error deleting certification:", error);
+      // You might want to add error notification here
+    } finally {
+      setLoading(false);
+    }
   };
 
   const toggleEdit = () => {
@@ -36,17 +55,30 @@ const Certification = () => {
             size="lg"
             color="brightSun.4"
             variant="subtle"
+            disabled={loading}
           >
             <IconPlus className="w-4/5 h-4/5" stroke={1.5} />
           </ActionIcon>
-          <ActionIcon onClick={toggleEdit} variant="subtle" color={edit ? "red.8" : "brightSun.4"} size="lg">
+          <ActionIcon 
+            onClick={toggleEdit} 
+            variant="subtle" 
+            color={edit ? "red.8" : "brightSun.4"} 
+            size="lg"
+            disabled={loading}
+          >
             {edit ? <IconX className="w-4/5 h-4/5" stroke={1.5} /> : <IconPencil className="w-4/5 h-4/5" stroke={1.5} />}
           </ActionIcon>
         </div>
       </div>
       <div className="flex flex-col gap-8">
         {profile?.certifications?.map((certi: any, index: number) => (
-          <CertiCard key={index} edit={edit} {...certi} onDelete={() => handleDelete(index)} />
+          <CertiCard 
+            key={index} 
+            edit={edit} 
+            {...certi} 
+            onDelete={() => handleDelete(index)}
+            loading={loading}
+          />
         ))}
         {addCerti && <CertiInput setEdit={setAddCerti} />}
       </div>

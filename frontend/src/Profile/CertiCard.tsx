@@ -22,17 +22,23 @@ function CertiCard(props: any) {
           <div className="text-sm text-gray-400">{props.issuer}</div>
         </div>
       </div>
-
+      
       {/* Right Side: Date, ID & Delete Button */}
       <div className="flex items-center gap-3">
         <div className="text-sm text-gray-400 flex flex-col items-end">
           <div>{formatDate(props.issueDate) || "N/A"}</div>
           <div>{props.certificateId || "N/A"}</div>
         </div>
-
+        
         {/* Delete Button (Only in Edit Mode) */}
         {props.edit && (
-          <ActionIcon size="lg" color="red.8" variant="subtle" onClick={props.onDelete}>
+          <ActionIcon 
+            size="lg" 
+            color="red.8" 
+            variant="subtle" 
+            onClick={props.onDelete}
+            loading={props.loading}
+          >
             <IconTrash className="h-4/5 w-4/5" stroke={1.5} />
           </ActionIcon>
         )}

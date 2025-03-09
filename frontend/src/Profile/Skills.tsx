@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { setProfile } from "../Slices/ProfileSlice";
 import { successNotification } from "../Services/NotificationService";
+import { updateProfile } from "../Services/ProfileService";
 
 const Skills = () => {
   const dispatch = useDispatch();
@@ -12,6 +13,7 @@ const Skills = () => {
   // Initialize skills with profile data or empty array if not available
   const [skills, setSkills] = useState<string[]>(profile?.skills || []);
   const [edit, setEdit] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleEditToggle = () => {
     if (!edit) {
@@ -21,10 +23,28 @@ const Skills = () => {
   };
 
   // Handle Save
-  const handleSave = () => {
-    dispatch(setProfile({ ...profile, skills })); // Update Redux state
-    successNotification("Success", "Skills Updated Successfully.");
-    setEdit(false);
+  const handleSave = async () => {
+    if (!profile) return;
+    
+    setLoading(true);
+    try {
+      // Create updated profile object
+      const updatedProfile = { ...profile, skills };
+      
+      // Send update to backend
+      const response = await updateProfile(updatedProfile);
+      
+      // Update Redux state with response
+      dispatch(setProfile(response));
+      
+      successNotification("Success", "Skills Updated Successfully.");
+      setEdit(false);
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      // You might want to add error notification here
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Handle Cancel
@@ -39,7 +59,13 @@ const Skills = () => {
         Skills{" "}
         <div>
           {edit && (
-            <ActionIcon onClick={handleSave} size="lg" color="green.8" variant="subtle">
+            <ActionIcon 
+              onClick={handleSave} 
+              size="lg" 
+              color="green.8" 
+              variant="subtle"
+              loading={loading}
+            >
               <IconCheck className="h-4/5 w-4/5" />
             </ActionIcon>
           )}
@@ -48,6 +74,7 @@ const Skills = () => {
             size="lg"
             color={edit ? "red.8" : "brightSun.4"}
             variant="subtle"
+            disabled={loading}
           >
             {edit ? <IconX className="h-4/5 w-4/5" /> : <IconPencil className="h-4/5 w-4/5" />}
           </ActionIcon>
@@ -60,6 +87,7 @@ const Skills = () => {
           label="Press Enter to submit a tag"
           placeholder="Add skill"
           splitChars={[",", " ", "|"]}
+          disabled={loading}
         />
       ) : (
         <div className="flex flex-wrap gap-2">

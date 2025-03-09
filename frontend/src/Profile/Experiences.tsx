@@ -1,5 +1,5 @@
 import { ActionIcon } from "@mantine/core";
-import { IconDeviceFloppy, IconPencil, IconPlus, IconX } from "@tabler/icons-react";
+import { IconPencil, IconPlus, IconX } from "@tabler/icons-react";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import ExpCard from "./ExpCard";

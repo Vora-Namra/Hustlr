@@ -3,24 +3,43 @@ import { useState } from "react";
 import { ExpInput } from "./ExpInput";
 import { formatDate } from "../Services/Utilities";
 import { useDispatch, useSelector } from "react-redux";
-import Experiences from "./Experiences";
 import { changeProfile } from "../Slices/ProfileSlice";
 import { successNotification } from "../Services/NotificationService";
+import { updateProfile } from "../Services/ProfileService";
 
 function ExpCard(props: any) {
   const dispatch = useDispatch();
   const [edit, setEdit] = useState(props.add || false); // Open edit mode if adding new experience
-  const profile = useSelector((state:any)=>state.profile);
-  const handleDelete = () => {
-    let exp = [...profile.experiences]; // Copy experiences array
-    exp.splice(props.index, 1); // Remove the experience at the given index
-  
-    let updatedProfile = { ...profile, experiences: exp }; // Use lowercase "experiences"
-  
-    dispatch(changeProfile(updatedProfile));
-    successNotification("Success", "Experience Deleted Successfully");
-    // Dispatch the updated profile
-    props.setEdit(false); // Close edit mode
+  const [loading, setLoading] = useState(false);
+  const profile = useSelector((state: any) => state.profile);
+
+  const handleDelete = async () => {
+    if (!profile) return;
+
+    setLoading(true);
+    try {
+      // Remove the experience at the given index
+      let exp = [...profile.experiences];
+      exp.splice(props.index, 1);
+      
+      // Create updated profile object
+      const updatedProfile = { ...profile, experiences: exp };
+      
+      // Send update to backend
+      const response = await updateProfile(updatedProfile);
+      
+      // Update Redux state with response from backend
+      dispatch(changeProfile(response));
+      
+      successNotification("Success", "Experience Deleted Successfully");
+      // Close edit mode
+      props.setEdit(false);
+    } catch (error) {
+      console.error("Error deleting experience:", error);
+      // You might want to add error notification here
+    } finally {
+      setLoading(false);
+    }
   };
   
   return !edit ? (
@@ -50,10 +69,22 @@ function ExpCard(props: any) {
       <div className="text-sm text-mine-shaft-300 text-justify">{props.description}</div>
       {props.edit && (
         <div className="flex gap-5">
-          <Button onClick={() => setEdit(true)} color="brightSun.4" variant="outline">
+          <Button 
+            onClick={() => setEdit(true)} 
+            color="brightSun.4" 
+            variant="outline"
+            disabled={loading}
+          >
             Edit
           </Button>
-          <Button color="red.8" onClick={handleDelete} variant="light">Delete</Button>
+          <Button 
+            color="red.8" 
+            onClick={handleDelete} 
+            variant="light"
+            loading={loading}
+          >
+            Delete
+          </Button>
         </div>
       )}
     </div>
