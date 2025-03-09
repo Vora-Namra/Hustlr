@@ -6,8 +6,10 @@ import {
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getNotifications, readNotification } from '../Services/NotifyService';
+import { useNavigate } from 'react-router-dom';
 
 const NotificationMenu = () => {
+    const navigate = useNavigate();
     const user = useSelector((state: { user: { id: string } }) => state.user);
     const [opened, setOpened] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -60,6 +62,10 @@ const NotificationMenu = () => {
 
     
     
+    function unread(index: number) {
+        throw new Error('Function not implemented.');
+    }
+
     return (
         <div>
             <Menu shadow="md" width={300} opened={opened} onChange={setOpened}>
@@ -79,9 +85,14 @@ const NotificationMenu = () => {
                         ) : notifications.length === 0 ? (
                             <div className="p-3 text-center text-gray-500">No notifications</div>
                         ) : (
-                            notifications.map((notification,index) => (
+                            notifications.map((notification:any,index) => (
                                 <Notification
                                     key={notification.id}
+                                    onClick={()=>{navigate(notification.route);
+                                        unread(index);
+                                        setOpened(false);
+                                    }}
+                                    
                                     className='hover:bg-mine-shaft-900 cursor-pointer'
                                     icon={<IconCheck onClick={()=>removeNotification(index)} style={{ width: 20, height: 20, display: 'block' }} />}
                                     color="teal"

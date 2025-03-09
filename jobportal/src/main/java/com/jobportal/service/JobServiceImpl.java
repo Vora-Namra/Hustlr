@@ -35,7 +35,16 @@ public class JobServiceImpl implements JobService{
         if (jobDTO.getId() == null || jobDTO.getId().equals("0")) {
             jobDTO.setId(String.valueOf(utilities.getNextSequence("jobs")));
             jobDTO.setPostTime(LocalDateTime.now());
-        } else {
+            NotificationDTO notificationDTO = new NotificationDTO();
+            notificationDTO.setMessage("Job Posted For "+jobDTO.getJobTitle() + " at "+ jobDTO.getCompany());
+            notificationDTO.setAction(" Job Posted Successfully");
+           
+            notificationDTO.setUserId(jobDTO.getPostedBy());
+            notificationDTO.setRoute("/posted-job/"+jobDTO.getId());
+            
+            notificationService.sendNotification(notificationDTO);
+          }
+         else {
             Job job = jobRepository.findById(jobDTO.getId())
                 .orElseThrow(() -> new Exception("Job not Found"));
             if (job.getJobStatus().equals(JobStatus.DRAFT) || 
