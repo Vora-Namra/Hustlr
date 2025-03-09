@@ -17,16 +17,20 @@ public class NotificationServiceImpl  implements NotificationService {
     @Autowired
     private NotificationRepository notificationRepository;
 
+    @Autowired
+    private Utilities utilities;
+
     @Override
     public void sendNotification(NotificationDTO notificationDTO) throws RuntimeException {
-        notificationDTO.setId(Utilities.getNextSequence("notification"));
+        notificationDTO.setId(String.valueOf(utilities.getNextSequence("notification")));
         notificationDTO.setStatus(NotificationStatus.UNREAD);
         notificationDTO.setTimestamp(LocalDateTime.now());
         notificationRepository.save(notificationDTO.toEntity());
     }
 
     @Override
-    public List<Notification> getUnreadNotifications(Long userId) {
-        return notificationRepository.findByUserIdAndStatus(userId, NotificationStatus.UNREAD);
+    public List<Notification> getUnreadNotifications(String userId) {
+        Long userIdLong = Long.parseLong(userId);
+        return notificationRepository.findByUserIdAndStatus(userIdLong, NotificationStatus.UNREAD);
     }
 }

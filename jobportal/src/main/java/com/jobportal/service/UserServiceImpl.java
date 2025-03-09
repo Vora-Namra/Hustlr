@@ -1,6 +1,8 @@
+
 package com.jobportal.service;
 
 import com.jobportal.dto.LoginDTO;
+import com.jobportal.dto.NotificationDTO;
 import com.jobportal.dto.ResponseDTO;
 import com.jobportal.dto.UserDTO;
 import com.jobportal.entity.Data;
@@ -33,6 +35,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private Utilities utilities;
+
+    @Autowired
+    NotificationService notificationService;
 
     private final ProfileService profileService;
 
@@ -178,6 +183,11 @@ public class UserServiceImpl implements UserService {
         // Encode and save the new password
         user.setPassword(passwordEncoder.encode(loginDTO.getPassword()));
         userRepository.save(user);
+        NotificationDTO notificationDTO = new NotificationDTO();
+        notificationDTO.setUserId(user.getId());
+        notificationDTO.setMessage("Password changed successfully");
+        notificationDTO.setAction("Password Reset");
+        notificationService.sendNotification(notificationDTO);
 
         // Optionally send a confirmation email or log the event
         return new ResponseDTO("Password changed successfully");

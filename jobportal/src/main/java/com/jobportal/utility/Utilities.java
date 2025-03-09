@@ -25,6 +25,8 @@ public class Utilities {
         return counter != null ? counter.getSeq() : 1;
     }
 
+    
+
     // Improved OTP generation with better randomness
     public static String generateOTP() {
         SecureRandom random = new SecureRandom();

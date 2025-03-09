@@ -1,3 +1,4 @@
+
 package com.jobportal.entity;
 
 import com.jobportal.dto.Certification;

@@ -1,3 +1,4 @@
+
 package com.jobportal.dto;
 
 import com.jobportal.entity.User;

@@ -58,12 +58,10 @@ function SearchBar() {
         ))}
 
   {/* Experience Range Slider */}
-        <div className="w-full md:w-1/4">
-          <div className="flex text-xs md:text-sm justify-between mb-2">
-            <div className="font-medium">Experience (Years)</div>
-            <div className="text-mine-shaft-300">
-              {value[0]} - {value[1]}
-            </div>
+        <div className="w-full md:w-1/4 [&_.mantine-Slider-label]:!translate-y-10">
+          <div className="flex text-xs md:text-sm justify-between">
+            <div>Experience</div>
+            <div>{value[0]} - {value[1]} Years</div>
           </div>
           <RangeSlider
             className="mt-1"
@@ -74,34 +72,7 @@ function SearchBar() {
             min={0}
             onChangeEnd={(e) => handleChange("exp", e)}
             onChange={setValue}
-            step={1}
-            minRange={1}
-            label={(val) => `${val}y`}
             labelAlwaysOn
-            styles={{
-              label: {
-                background: 'transparent',
-                fontSize: '10px',
-                '@media (min-width: 768px)': {
-                  fontSize: '12px',
-                },
-              },
-              thumb: {
-                borderWidth: 2,
-                height: 16,
-                width: 16,
-                '@media (min-width: 768px)': {
-                  height: 20,
-  width: 20,
-                },
-              },
-              track: {
-                height: 4,
-                '@media (min-width: 768px)': {
-                  height: 6,
-                },
-              }
-            }}
           />
         </div>
       </div>

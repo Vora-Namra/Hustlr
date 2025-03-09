@@ -1,3 +1,4 @@
+
 package com.jobportal.entity;
 
 import java.time.LocalDateTime;
@@ -17,7 +18,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Document(collection = "notification")
 public class Notification {
-    private Long id;
+    private String id;
     private Long userId;
     private String message;
     private String action;
