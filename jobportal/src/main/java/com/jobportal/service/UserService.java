@@ -7,7 +7,7 @@ import jakarta.validation.Valid;
 
 public interface UserService {
     public UserDTO registerUser(UserDTO userDTO) throws Exception;
-
+    public UserDTO getUserByEmail(String email) throws Exception;
     public UserDTO loginUser(LoginDTO loginDTO) ;
 
     public Boolean sendOtp(String email) throws Exception;

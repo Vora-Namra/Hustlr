@@ -194,4 +194,12 @@ public class UserServiceImpl implements UserService {
             log.info("Removed {} expired OTPs", expiredOTPs.size());
         }
     }
+
+    @Override
+    public UserDTO getUserByEmail(String email) throws Exception {
+        // TODO Auto-generated method stub
+        return userRepository.findByEmail(email).orElseThrow(()->new Exception("User not Found")).toDTO();
+    }
+
+    
 }
