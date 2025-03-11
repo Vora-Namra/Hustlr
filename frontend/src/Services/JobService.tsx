@@ -1,4 +1,5 @@
-import axios from 'axios';
+import axiosInstance from "../Interceptor/AuthInterceptor";
+
 
 // Corrected the protocol from httpL:// to http://
 const base_url = "http://localhost:8080/jobs/";
@@ -25,50 +26,49 @@ interface Application {
 
 // Function to post a job
 const postJob = async (job: Job) => {
-    try {
+
         // Remove id if it's "0" to let backend generate it
         if (job.id === "0") {
             delete job.id;
         }
 
-        const response = await axios.post(`${base_url}post`, job);
-        return response.data;
-    } catch (err: any) {
-        console.error("Error posting job:", err.response?.data || err.message);
-        throw err;
-    }
+       return axiosInstance.post(`/jobs/post`, job)
+            .then(res=>res.data)
+            .catch(err=>{throw err})
+    
 };
 
 // Function to get all jobs
 const getAllJobs = async () => {
-    return axios.get(`${base_url}getAll`)
+    return axiosInstance.get(`/jobs/getAll`)
         .then(res => res.data)
         .catch(err => { throw err; });
 };
 
 // Function to get a job by ID
 const getJob = async (id: string) => {
-    return axios.get(`${base_url}get/${id}`)
+    return axiosInstance.get(`/jobs/get/${id}`)
         .then(res => res.data)
         .catch(err => { throw err; });
 };
 
 // Function to apply for a job
 const applyJob = async (id: string, applicant: Applicant) => {
-    const response = await axios.post(`${base_url}apply/${id}`, applicant);
-    return response.data;
+    return axiosInstance.post(`/jobs/apply/${id}`, applicant)
+        .then(res=>res.data)
+        .catch(err=>{throw err});
 };
 
 // Function to get jobs posted by a user
 const getJobPostedBy = async (id: string) => {
-    return axios.get(`${base_url}postedBy/${id}`)
+    return axiosInstance.get(`/jobs/postedBy/${id}`)
         .then(res => res.data)
         .catch(err => { throw err; });
 };
 
 // Function to change application status
 const changeAppStatus = async (application: Application) => {
-    return axios.put(`${base_url}changeAppStatus`, application)
+    return axiosInstance.put(`/jobs/changeAppStatus`, application)
         .then(res => res.data)
         .catch(err => { throw err; });
 };

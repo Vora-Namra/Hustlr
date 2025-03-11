@@ -1,21 +1,17 @@
-import axios from 'axios';
-import React, { useEffect, useState } from 'react';
 
-const base_url = "http://localhost:8080/profiles/";
+import React, { useEffect, useState } from 'react';
+import axiosInstance from '../Interceptor/AuthInterceptor';
+
 
 const getProfile = async (id: any) => {
-  try {
-    const response = await axios.get(`${base_url}get/${id}`);
-    return response.data;
-  } catch (err: any) {
-    console.error("Error fetching profile:", err.response?.data || err.message);
-    throw err;
-  }
+  return axiosInstance.get(`/profiles/get/${id}`)
+  .then(res=>res.data)
+  .catch(err=>{throw err});
 };
 
 const getProfileByApplicantId = async (applicantId: any) => {
   try {
-    const response = await axios.get(`${base_url}applicant/${applicantId}`);
+    const response = await axiosInstance.get(`/profiles/applicant/${applicantId}`);
     return response.data;
   } catch (err: any) {
     console.error("Error fetching profile by applicantId:", err.response?.data || err.message);
@@ -24,7 +20,7 @@ const getProfileByApplicantId = async (applicantId: any) => {
 };
 
 const updateProfile = async (profile: any) => {
-  return axios.put(`${base_url}update`, profile)
+  return axiosInstance.put(`/profiles/update`, profile)
     .then(res => res.data)
     .catch(err => { 
       throw err; 
@@ -61,7 +57,7 @@ const ProfileCard = ({ applicantId }: { applicantId: any }) => {
 };
 
 const getAllProfiles = async () => {
-  return axios.get(`${base_url}getAll`)
+  return axiosInstance.get(`/profiles/getAll`)
     .then(res => res.data)
     .catch(err => { throw err; });
 };

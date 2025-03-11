@@ -1,10 +1,10 @@
-import axios from 'axios';
+import axiosInstance from "../Interceptor/AuthInterceptor";
 
 // Corrected the protocol from httpL:// to http://
 const base_url = "http://localhost:8080/users/";
 
 const registerUser = async (user: any) => {
-  return axios.post(`${base_url}register`, user)
+  return axiosInstance.post(`/users/register`, user)
     .then(res => res.data)
     .catch(err => {
       throw err; 
@@ -12,7 +12,7 @@ const registerUser = async (user: any) => {
 };
 
 const loginUser = async (login: any) => {
-  return axios.post(`${base_url}login`, login)
+  return axiosInstance.post(`/users/login`, login)
     .then(res => res.data)
     .catch(err => {
       throw err; 
@@ -20,7 +20,7 @@ const loginUser = async (login: any) => {
 };
 
 const sendOtp = async (email: any) => {
-  return axios.post(`${base_url}sendOtp/${email}`)
+  return axiosInstance.post(`/users/sendOtp/${email}`)
     .then(res => res.data)
     .catch(err => {
       throw err; 
@@ -28,7 +28,7 @@ const sendOtp = async (email: any) => {
 };
 
 const verifyOtp = async (email: string, otp: string) => {
-  return axios.post(`${base_url}verifyOtp`, { email, otp }) // Send as JSON body
+  return axiosInstance.post(`/users/verifyOtp`, { email, otp }) // Send as JSON body
     .then(res => res.data)
     .catch(err => {
       throw err.response?.data || { message: "Verification failed" };
@@ -37,7 +37,7 @@ const verifyOtp = async (email: string, otp: string) => {
 
 
 const changePass = async (email:string,password:string)=>{
-  return axios.post(`${base_url}changePassword`,{email,password})
+  return axiosInstance.post(`/users/changePassword`,{email,password})
   .then(res=>res.data)
   .catch(err=>{throw err});
 }

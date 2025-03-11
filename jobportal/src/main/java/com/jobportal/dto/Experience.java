@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.mapping.FieldType;
-import java.time.YearMonth;
 
 @Data
 @AllArgsConstructor
