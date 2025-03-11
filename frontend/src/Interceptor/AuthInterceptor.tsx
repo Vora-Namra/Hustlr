@@ -1,4 +1,6 @@
 import axios from 'axios';
+import { removeUser } from '../Slices/UserSlice';
+import { removeJwt } from '../Slices/JwtSlice';
 
 const axiosInstance = axios.create({
     baseURL: 'http://localhost:8080',
@@ -17,5 +19,24 @@ axiosInstance.interceptors.request.use(
         return Promise.reject(err);
     }
 );
+
+
+// AuthInterceptor.tsx
+export const setupResponseInterceptor = (navigate: any, dispatch: any) => {
+    axiosInstance.interceptors.response.use(
+        (response) => response,
+        (err) => {
+            if (err.response?.status === 401) {
+                // Clear Redux state and localStorage
+                dispatch(removeUser());
+                dispatch(removeJwt());
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                navigate('/login');
+            }
+            return Promise.reject(err);
+        }
+    );
+};
 
 export default axiosInstance;

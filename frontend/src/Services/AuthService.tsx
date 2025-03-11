@@ -12,4 +12,9 @@ const loginUser = async (login: any) => {
       });
   };
   
+ export const navigateToLogin=(navigate:any)=>{
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    navigate("/login");
+  }
   export  {loginUser};
