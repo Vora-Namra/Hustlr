@@ -18,6 +18,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 import { getProfile } from '../Services/ProfileService';
 import { setProfile } from '../Slices/ProfileSlice';
+import ProtectedRoutes from '../Services/ProtectedRoutes';
+import PublicRoute from '../Services/PublicRoute';
 
 const AppRoutes = () => {
   const user = useSelector((state: any) => state.user);
@@ -42,16 +44,16 @@ const AppRoutes = () => {
         <Divider size="xs" color="mineShaft.7" />
         <Routes>
           <Route path="/find-jobs" element={<FindJobs />} />
-          <Route path="/find-talent" element={<FindTalentPage />} />
+          <Route path="/find-talent" element={<ProtectedRoutes allowedRoles={['EMPLOYER']}><FindTalentPage /></ProtectedRoutes>} />
           <Route path="/jobs/:id" element={<JobDescPage />} />
           <Route path="/apply-job/:id" element={<ApplyJobPage />} />
-          <Route path="/posted-job/:id" element={<PostedJobPage />} />
+          <Route path="/posted-job/:id" element={<ProtectedRoutes allowedRoles={['EMPLOYER']}><PostedJobPage /></ProtectedRoutes>} />
           <Route path="/job-history" element={<JobHistoryPage />} />
-          <Route path="/post-job/:id" element={<PostJobPage />} />
+          <Route path="/post-job/:id" element={<ProtectedRoutes allowedRoles={['EMPLOYER']}><PostJobPage /></ProtectedRoutes>} />
           <Route path="/company/:name" element={<CompanyPage />} />
-          <Route path="/signup" element={ <SignUpPage />} />
-          <Route path="/login" element={ <SignUpPage />} />
-          <Route path='/talent-profile/:id' element={<TalentProfilePage />} />
+          <Route path="/signup" element={<PublicRoute><SignUpPage /></PublicRoute>} />
+          <Route path="/login" element={<PublicRoute><SignUpPage /></PublicRoute>} />
+          <Route path='/talent-profile/:id' element={<ProtectedRoutes allowedRoles={['EMPLOYER']}><TalentProfilePage /></ProtectedRoutes>} />
           <Route path='/profile' element={<ProfilePage />} />
           <Route path="*" element={<HomePage />} />
         </Routes> 
