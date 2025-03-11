@@ -2,13 +2,15 @@ import { TextInput, rem, PasswordInput, Button, LoadingOverlay } from "@mantine/
 import { IconAt, IconCheck, IconLock, IconX } from "@tabler/icons-react";
 import {  useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { loginUser } from "../Services/UserServices";
 import { loginValidation } from "../Services/FormValidation";
 import { notifications } from "@mantine/notifications";
 import { useDisclosure } from "@mantine/hooks";
 import { ResetPassword } from "./ResetPassword";
 import { useDispatch } from "react-redux";
 import { setUser } from "../Slices/UserSlice";
+import { setJwt } from "../Slices/JwtSlice";
+import { loginUser } from "../Services/AuthService";
+import { jwtDecode } from "jwt-decode";
 
 const form = {
   email: "",
@@ -66,8 +68,11 @@ export const Login = () => {
           setTimeout(() => {
             setLoading(false);
             dispatch(setUser(res))
+            dispatch(setJwt(res.jwt));
+            const decoded = jwtDecode(res.jwt);
+            dispatch(setUser({...decoded,email:decoded.sub}));
             navigate("/");
-          }, 4000);
+          }, 2000);
         })
         .catch((err) => {
           setLoading(false);

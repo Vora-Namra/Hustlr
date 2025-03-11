@@ -21,7 +21,7 @@ public class MyUserDetailService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
        try{
         UserDTO dto = userService.getUserByEmail(email);
-        return new CustomUserDetails(dto.getId(),dto.getEmail(),dto.getPassword(),dto.getAccountType(),new ArrayList<>());
+        return new CustomUserDetails(dto.getId(),dto.getEmail(),dto.getName(),dto.getPassword(),dto.getAccountType(),new ArrayList<>());
        } catch(Exception e){
          e.printStackTrace();
        }
