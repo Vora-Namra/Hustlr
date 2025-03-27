@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button, Combobox, useCombobox, Text, Box, ActionIcon } from '@mantine/core';
+import { Combobox, useCombobox,ActionIcon } from '@mantine/core';
 import { IconAdjustments } from '@tabler/icons-react';
 import { useDispatch } from 'react-redux';
 import { updateSort } from '../Slices/SortSlice';

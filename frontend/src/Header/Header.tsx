@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react'
 import { IconAsset, IconBell, IconMenu2 } from "@tabler/icons-react"
-import { Avatar, Button, Drawer, Indicator } from '@mantine/core'
+import { Avatar, Burger, Button, Drawer, Indicator } from '@mantine/core'
 import NavLinks from './NavLinks'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { ProfileMenu } from './ProfileMenu'
@@ -12,8 +12,10 @@ import NotificationMenu from './NotificationMenu'
 import { jwtDecode } from 'jwt-decode'
 import { setUser } from '../Slices/UserSlice'
 import { setupResponseInterceptor } from '../Interceptor/AuthInterceptor'
+import { useDisclosure } from '@mantine/hooks'
 
 function Header() {
+  const [opened, {open,close}] = useDisclosure(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
   const user = useSelector((state: any) => state.user);
@@ -86,6 +88,8 @@ function Header() {
           <IconMenu2 className='h-6 w-6' />
         </Button>
       </div>
+
+      {/* <Burger opened={opened} onClick={open} aria-label="Toggle menu" /> */}
 
       {/* Mobile Menu Drawer */}
       <Drawer
