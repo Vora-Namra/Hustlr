@@ -5,6 +5,7 @@ import { getAllJobs } from '../Services/JobService';
 import { useDispatch, useSelector } from 'react-redux';
 import { resetFilter } from '../Slices/FilterSlice';
 import { resetSort } from '../Slices/SortSlice';
+import { Drawer } from '@mantine/core';
 
 function Jobs() {
   const dispatch = useDispatch();
@@ -12,7 +13,8 @@ function Jobs() {
   const filter = useSelector((state:any)=>state.filter);
   const sort=useSelector((state:any)=>state.sort);
   const [filteredJobs,setFilteredJobs] = useState<any>([]);
-
+  const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
+  
   useEffect(() => {
     dispatch(resetFilter());
     dispatch(resetSort());
@@ -23,7 +25,7 @@ function Jobs() {
         console.error('Error fetching jobs:', err);
       });
   }, []);
-
+  
   useEffect(()=>{
     if(sort=="Most Recent"){
       setJobList([...jobList].sort((a:any,b:any)=>new Date(b.postTime).getTime()-new Date(a.createdAt).getTime()));
@@ -35,6 +37,7 @@ function Jobs() {
     }
     
   },[sort]);
+  
   useEffect(() => {
     let filterjob = jobList;
     console.log(filter);
@@ -59,7 +62,7 @@ function Jobs() {
           )
         )
     }
-
+    
     if (filter["Job Type"] && filter["Job Type"].length > 0) {
       filterjob = filterjob.filter((job: any) =>
         filter["Job Type"].some((type: any) =>
@@ -67,22 +70,38 @@ function Jobs() {
         )
       );
     }
-
+    
     if(filter.salary && filter.salary.length>0){
       filterjob = filterjob.filter((jobs:any)=>filter.salary[0]<=jobs.packageOffered && jobs.packageOffered<=filter.salary[1]);
     }
     
     setFilteredJobs(filterjob);
   }, [filter, jobList]);
-
-
-
+  
+  // This would be your filter component that appears in the drawer
+  const FilterComponent = () => {
+    // Add your filter component logic here
+    return (
+      <div className="p-4">
+        <h3 className="text-lg font-semibold mb-4">Filters</h3>
+        {/* Your filter components would go here */}
+      </div>
+    );
+  };
+  
   return (
     <div className="p-5">
-      <div className="flex justify-between mx-28 gap-5">
-        <div className="text-xl font-semibold">Recommended Jobs</div>
-        <Sort sort="job" />
+      <div className="flex justify-between items-center flex-wrap mx-4 md:mx-28 gap-5 xs-mx:justify-start">
+        <div className="text-xl font-semibold xs-mx:text-lg">Recommended Jobs</div>
+        
+        {/* Sort component that will handle sorting */}
+        <Sort 
+          sort="job" 
+          onFilterClick={() => setFilterDrawerOpen(true)} 
+          showFilterIcon={true} 
+        />
       </div>
+      
       <div className="flex flex-wrap justify-center gap-10 mt-5">
         {jobList.length > 0 ? (
           filteredJobs.map((job:any, index:any) => {
@@ -93,6 +112,17 @@ function Jobs() {
           <div>No jobs available.</div>
         )}
       </div>
+      
+      {/* Mobile Filter Drawer */}
+      <Drawer
+        opened={filterDrawerOpen}
+        onClose={() => setFilterDrawerOpen(false)}
+        size="xs"
+        position="right"
+        title="Filters"
+      >
+        <FilterComponent />
+      </Drawer>
     </div>
   );
 }
