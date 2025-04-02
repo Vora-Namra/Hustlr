@@ -25,7 +25,7 @@ function NavLinks({ isMobile, onClose }: NavLinksProps) {
     return (
         <div className={`
             ${isMobile
-                ? 'flex flex-col gap-4'
+                ? 'flex flex-col  gap-4 text-mine-shaft-300 text-sm md:text-lg'
                 : 'flex gap-4 md:gap-10 items-center text-mine-shaft-300 text-sm md:text-lg h-full'
             }
         `}>

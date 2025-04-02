@@ -15,7 +15,7 @@ import { setupResponseInterceptor } from '../Interceptor/AuthInterceptor'
 import { useDisclosure } from '@mantine/hooks'
 
 function Header() {
-  const [opened, {open,close}] = useDisclosure(false);
+  // const [opened, {open,close}] = useDisclosure(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
   const user = useSelector((state: any) => state.user);
@@ -49,25 +49,27 @@ function Header() {
       {/* Logo Section */}
       <div className='flex gap-2 items-center text-bright-sun-400 ml-2 md:ml-6'>
         <IconAsset className='h-8 w-8 md:h-12 md:w-12' stroke={2} />
-        <div className='text-xl md:text-2xl font-semibold'>Hustlr</div>
+        <div className=' xs-mx:hidden text-2xl font-semibold'>Hustlr</div>
       </div>
 
       {/* Desktop Navigation */}
-      <div className='hidden md:block'>
+      <div className='hidden bs:block'>
         <NavLinks />
       </div>
 
       {/* Right Section */}
       <div className='flex gap-4 md:gap-8 items-center justify-between mr-2 md:mr-6'>
         {user ? (
-          <div className='hidden md:block'>
+          <div >
             <ProfileMenu />
           </div>
         ) : (
           <Link to="/login">
-            <Button variant='subtle' color='brightSun.4' size='sm' className='hidden md:block'>
+            <div className='hidden xs-mx:block'>
+            <Button variant='subtle' color='brightSun.4' size='sm' className='hidden xs-mx:block'>
               Login
             </Button>
+            </div>
           </Link>
         )}
         {user?<NotificationMenu/>:<></>}
@@ -80,16 +82,18 @@ function Header() {
 
 
         {/* Mobile Menu Button */}
+        <div className='bs:hidden'>
         <Button
           variant='subtle'
-          className='md:hidden'
           onClick={() => setMobileMenuOpen(true)}
         >
           <IconMenu2 className='h-6 w-6' />
         </Button>
+        </div>
+        
       </div>
 
-      {/* <Burger opened={opened} onClick={open} aria-label="Toggle menu" /> */}
+      {/* { <Burger opened={opened} onClick={open} aria-label="Toggle menu" /> } */}
 
       {/* Mobile Menu Drawer */}
       <Drawer

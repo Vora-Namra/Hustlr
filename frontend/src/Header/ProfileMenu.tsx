@@ -28,7 +28,7 @@ export const ProfileMenu = () => {
     <Menu shadow="md" width={200} opened={opened} onChange={setOpened}>
       <Menu.Target>
         <div className="flex cursor-pointer items-center gap-2">
-          <div className="hidden sm:block text-sm md:text-base">{user.name}</div>
+          <div className=" xs-mx:hidden text-sm md:text-base">{user.name}</div>
           <Avatar
             src={profile.picture ? `data:image/jpeg;base64,${profile.picture}` : "avatar.png"}
             alt="profile"
