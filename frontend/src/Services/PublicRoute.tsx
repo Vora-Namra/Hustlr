@@ -1,16 +1,9 @@
-import { useSelector } from "react-redux";
-import { Navigate } from "react-router-dom";
+import React from 'react';
+import { Navigate } from 'react-router-dom';
 
-interface PublicRouteProps{
-    children:JSX.Element
-}
-
-const PublicRoute: React.FC<PublicRouteProps> = ({ children }) => {
-    const token = useSelector((state: any) => state.jwt); 
-    if (token) {
-        return <Navigate to="/" />; 
-    }
-    return children;
-}
+const PublicRoute: React.FC<{ children: JSX.Element }> = ({ children }) => {
+  const token = window.localStorage.getItem('token');
+  return token ? <Navigate to="/" replace /> : children;
+};
 
 export default PublicRoute;

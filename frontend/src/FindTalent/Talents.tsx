@@ -1,93 +1,123 @@
-import { useEffect, useState } from "react";
-import { Sort } from "../FindJobs/Sort"
-import TalentCard from "./TalentCard"
+import { useEffect, useState, useMemo } from "react";
+import { Sort } from "../FindJobs/Sort";
+import TalentCard from "./TalentCard";
 import { getAllProfiles } from "../Services/ProfileService";
 import { useDispatch, useSelector } from "react-redux";
 import { resetFilter } from "../Slices/FilterSlice";
+import { resetSort } from "../Slices/SortSlice";
 
 function Talents() {
-  const dispatch = useDispatch()
-  const [talents,setTalents] = useState<any>([]);
-  const filter = useSelector((state:any)=>state.filter);
-  const sort=useSelector((state:any)=>state.sort);
-  const [filteredTalents,setFilteredTalents] = useState<any>([]);
-  useEffect(()=>{
-   dispatch(resetFilter());
-    getAllProfiles().then((res)=>{  
-      setTalents(res);
-    }).catch((err)=>{
-      throw err;
-    })
-  },[])
-
-  useEffect(()=>{
- if(sort=="Experience: Low to High"){
-      setTalents([...talents].sort((a:any,b:any)=>a.totalExp-b.totalExp));
-    }
-    else if(sort=="Experience: High to Low"){
-      setTalents([...talents].sort((a:any,b:any)=>b.totalExp-a.totalExp));
-    }
-    
-  },[sort]);
+  const dispatch = useDispatch();
+  const [talents, setTalents] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const filter = useSelector((state: any) => state.filter);
+  const sort = useSelector((state: any) => state.sort);
 
   useEffect(() => {
-    let filterTalent = talents;
-    console.log(filter);
+    dispatch(resetFilter());
+    dispatch(resetSort());
+    setIsLoading(true);
+
+    getAllProfiles()
+      .then((res) => {
+        setTalents(res);
+      })
+      .catch((err) => {
+        console.error("Error fetching profiles:", err);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, [dispatch]);
+
+  const filteredTalents = useMemo(() => {
+    if (talents.length === 0) return [];
+
+    let filtered = [...talents];
+
+    // Apply filters
     if (filter.name) {
-      filterTalent = filterTalent.filter((talent: any) =>
-        talent.name.toLowerCase().includes(filter.name.toLowerCase())
+      filtered = filtered.filter((talent) =>
+        talent.name?.toLowerCase().includes(filter.name.toLowerCase())
       );
     }
-    if (filter["Job Title"] && filter["Job Title"].length > 0) {
-      filterTalent = filterTalent.filter((talent: any) =>
-        filter["Job Title"].some((title: any) =>
-          talent.jobTitle.toLowerCase().includes(title.toLowerCase())
+    if (filter["Job Title"]?.length > 0) {
+      filtered = filtered.filter((talent) =>
+        filter["Job Title"].some((title: string) =>
+          talent.jobTitle?.toLowerCase().includes(title.toLowerCase())
         )
       );
     }
-    if (filter.Location && filter.Location.length > 0) {
-      filterTalent = filterTalent.filter((talent: any) =>
-        filter.Location.some((location: any) =>
-          talent.location.toLowerCase().includes(location.toLowerCase())
+    if (filter.Location?.length > 0) {
+      filtered = filtered.filter((talent) =>
+        filter.Location.some((location: string) =>
+          talent.location?.toLowerCase().includes(location.toLowerCase())
         )
       );
     }
-    if (filter.Skills && filter.Skills.length > 0) {
-      filterTalent = filterTalent.filter((talent: any) =>
-        filter.Skills.every((skill: any) =>
-          talent.skills?.some((talentSkill: any) =>
+    if (filter.Skills?.length > 0) {
+      filtered = filtered.filter((talent) =>
+        filter.Skills.every((skill: string) =>
+          talent.skills?.some((talentSkill: string) =>
             talentSkill.toLowerCase().includes(skill.toLowerCase())
           )
         )
       );
     }
 
-    if(filter.exp && filter.exp.length>0){
-      filterTalent = filterTalent.filter((talent:any)=>filter.exp[0]<=talent.totalExp && talent.totalExp<=filter.exp[1]);
+    // ✅ Experience Filter
+    if (filter.exp && Array.isArray(filter.exp) && filter.exp.length === 2) {
+      const [minExp, maxExp] = filter.exp;
+      filtered = filtered.filter((talent) => {
+        const experience = parseFloat(talent.totalExp) || 0;
+        return experience >= minExp && experience <= maxExp;
+      });
     }
-    
-    
-    setFilteredTalents(filterTalent);
-  }, [filter, talents]);
 
+    return filtered;
+  }, [talents, filter]);
 
+  const sortedTalents = useMemo(() => {
+    if (filteredTalents.length === 0) return [];
 
-    return (
-      <div className="p-5">
-        <div className="flex justify-between mx-32 gap-5">
-          <div className="text-2xl font-semibold">Talents</div>
-          <Sort />
-        </div>
-        <div className="flex flex-wrap mt-5 gap-5 ml justify-center">
-          {
-          filteredTalents?.length?filteredTalents.map((talent:any, index:any) => (
-            <TalentCard key={index} {...talent} />
-          )
-        ):<div className="text-2xl font-semibold" > </div>}
-        </div>
+    let sorted = [...filteredTalents];
+
+    switch (sort) {
+      case "Experience Low to High":
+        sorted.sort((a, b) => (parseFloat(a.totalExp) || 0) - (parseFloat(b.totalExp) || 0));
+        break;
+      case "Experience High to Low":
+        sorted.sort((a, b) => (parseFloat(b.totalExp) || 0) - (parseFloat(a.totalExp) || 0));
+        break;
+      case "Relevance":
+      default:
+        // No special sorting, keep as API returns
+        break;
+    }
+
+    return sorted;
+  }, [filteredTalents, sort]);
+
+  return (
+    <div className="p-5">
+      <div className="flex justify-between items-center flex-wrap mx-4 md:mx-28 gap-5 xs-mx:justify-start">
+        <div className="text-xl font-semibold xs-mx:text-lg">Available Talents</div>
+        <Sort sort="talent" />
       </div>
-    );
-  }
-  
-  export default Talents;
-  
+
+      <div className="flex flex-wrap justify-center gap-10 mt-5">
+        {isLoading ? (
+          <div>Loading talents...</div>
+        ) : sortedTalents.length > 0 ? (
+          sortedTalents.map((talent, index) => (
+            <TalentCard key={`${talent.id}-${index}`} {...talent} />
+          ))
+        ) : (
+          <div>No talents available matching your criteria.</div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export default Talents;

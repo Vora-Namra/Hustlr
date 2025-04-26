@@ -1,119 +1,172 @@
 import { Sort } from './Sort';
 import JobCard from './JobCard';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { getAllJobs } from '../Services/JobService';
 import { useDispatch, useSelector } from 'react-redux';
 import { resetFilter } from '../Slices/FilterSlice';
-import { resetSort } from '../Slices/SortSlice';
+import { resetSort, SORT_OPTIONS } from '../Slices/SortSlice';
 import { Drawer } from '@mantine/core';
+import SearchBar from './SearchBar';
 
 function Jobs() {
   const dispatch = useDispatch();
-  const [jobList, setJobList] = useState([{}]);
-  const filter = useSelector((state:any)=>state.filter);
-  const sort=useSelector((state:any)=>state.sort);
-  const [filteredJobs,setFilteredJobs] = useState<any>([]);
+  const [jobList, setJobList] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const filter = useSelector((state: any) => state.filter);
+  const sort = useSelector((state: any) => state.sort);
   const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
-  
+
+  const getSalaryValue = (job: any): number => {
+    if (job.packageOffered === undefined || job.packageOffered === null) {
+      return -1;
+    }
+    
+    // Handle cases where packageOffered might be a string with "LPA" or similar
+    const salaryStr = String(job.packageOffered).replace(/[^\d.]/g, '');
+    const salary = Number(salaryStr);
+    return isNaN(salary) ? -1 : salary;
+  };
+
   useEffect(() => {
     dispatch(resetFilter());
     dispatch(resetSort());
-    getAllJobs().then((res) => {
-        setJobList(res.filter((job: { jobStatus: string }) => job.jobStatus == 'ACTIVE'));
+    setIsLoading(true);
+    
+    getAllJobs()
+      .then((res) => {
+        const activeJobs = res.filter((job: { jobStatus: string }) => job.jobStatus === 'ACTIVE');
+        setJobList(activeJobs);
       })
-      .catch((err) => {
-        console.error('Error fetching jobs:', err);
+      .catch(error => {
+        console.error("Error fetching jobs:", error);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
-  }, []);
-  
-  useEffect(()=>{
-    if(sort=="Most Recent"){
-      setJobList([...jobList].sort((a:any,b:any)=>new Date(b.postTime).getTime()-new Date(a.createdAt).getTime()));
-    }else if(sort=="Salary (Low to High)"){
-      setJobList(jobList.sort((a:any,b:any)=>a.packageOffered-b.packageOffered));
+  }, [dispatch]);
+
+  const filteredJobs = useMemo(() => {
+    if (jobList.length === 0) {
+      return [];
     }
-    else if(sort=="Salary (High to Low)"){
-      setJobList(jobList.sort((a:any,b:any)=>b.packageOffered-a.packageOffered));
-    }
-    
-  },[sort]);
-  
-  useEffect(() => {
-    let filterjob = jobList;
-    console.log(filter);
-    if (filter["Job Title"] && filter["Job Title"].length > 0) {
-      filterjob = filterjob.filter((job: any) =>
-        filter["Job Title"].some((title: any) =>
-          job.jobTitle.toLowerCase().includes(title.toLowerCase())
+
+    let jobs = [...jobList];
+
+    // Apply filters
+    if (filter["Job Title"]?.length > 0) {
+      jobs = jobs.filter((job) =>
+        filter["Job Title"].some((title: string) =>
+          job.jobTitle?.toLowerCase().includes(title.toLowerCase())
         )
       );
     }
-    if (filter.Location && filter.Location.length > 0) {
-      filterjob = filterjob.filter((job: any) =>
-        filter.Location.some((location: any) =>
-          job.location.toLowerCase().includes(location.toLowerCase())
+    if (filter.Location?.length > 0) {
+      jobs = jobs.filter((job) =>
+        filter.Location.some((location: string) =>
+          job.location?.toLowerCase().includes(location.toLowerCase())
         )
       );
     }
-    if (filter.Experience && filter.Experience.length > 0) {
-      filterjob = filterjob.filter((job: any) =>
-        filter.Experience?.some((skill: any) =>
-          job.experience?.toLowerCase().includes(skill.toLowerCase())
-          )
+    if (filter.Experience?.length > 0) {
+      jobs = jobs.filter((job) =>
+        filter.Experience.some((exp: string) =>
+          job.experience?.toLowerCase().includes(exp.toLowerCase())
         )
+      );
     }
-    
-    if (filter["Job Type"] && filter["Job Type"].length > 0) {
-      filterjob = filterjob.filter((job: any) =>
-        filter["Job Type"].some((type: any) =>
-          job.jobType.toLowerCase().includes(type.toLowerCase())
+    if (filter["Job Type"]?.length > 0) {
+      jobs = jobs.filter((job) =>
+        filter["Job Type"].some((type: string) =>
+          job.jobType?.toLowerCase().includes(type.toLowerCase())
         )
       );
     }
     
-    if(filter.salary && filter.salary.length>0){
-      filterjob = filterjob.filter((jobs:any)=>filter.salary[0]<=jobs.packageOffered && jobs.packageOffered<=filter.salary[1]);
+    // Apply salary filter if present
+    if (filter.salary && Array.isArray(filter.salary) && filter.salary.length === 2) {
+      const [minSalary, maxSalary] = filter.salary;
+      
+      jobs = jobs.filter(job => {
+        const salary = getSalaryValue(job);
+        return salary !== -1 && salary >= minSalary && salary <= maxSalary;
+      });
     }
+
+    // Apply sorting
+    let sortedJobs = [...jobs];
     
-    setFilteredJobs(filterjob);
-  }, [filter, jobList]);
-  
-  // This would be your filter component that appears in the drawer
-  const FilterComponent = () => {
-    // Add your filter component logic here
-    return (
-      <div className="p-4">
-        <h3 className="text-lg font-semibold mb-4">Filters</h3>
-        {/* Your filter components would go here */}
-      </div>
-    );
-  };
-  
+    switch (sort) {
+      case SORT_OPTIONS.MOST_RECENT:
+        sortedJobs.sort((a, b) => {
+          if (!a.postTime) return 1;  
+          if (!b.postTime) return -1; 
+          
+          const dateA = new Date(a.postTime);
+          const dateB = new Date(b.postTime);
+          
+          if (isNaN(dateA.getTime())) return 1;
+          if (isNaN(dateB.getTime())) return -1;
+          
+          return dateB.getTime() - dateA.getTime();
+        });
+        break;
+        
+      case SORT_OPTIONS.SALARY_LOW_HIGH:
+        sortedJobs.sort((a, b) => {
+          const salaryA = getSalaryValue(a);
+          const salaryB = getSalaryValue(b);
+          
+          if (salaryA === -1 && salaryB === -1) return 0;
+          if (salaryA === -1) return 1;
+          if (salaryB === -1) return -1;
+          
+          return salaryA - salaryB;
+        });
+        break;
+        
+      case SORT_OPTIONS.SALARY_HIGH_LOW:
+        sortedJobs.sort((a, b) => {
+          const salaryA = getSalaryValue(a);
+          const salaryB = getSalaryValue(b);
+          
+          if (salaryA === -1 && salaryB === -1) return 0;
+          if (salaryA === -1) return 1;
+          if (salaryB === -1) return -1;
+          
+          return salaryB - salaryA;
+        });
+        break;
+        
+      default:
+        break;
+    }
+
+    return sortedJobs;
+  }, [jobList, filter, sort]);
+
   return (
     <div className="p-5">
       <div className="flex justify-between items-center flex-wrap mx-4 md:mx-28 gap-5 xs-mx:justify-start">
         <div className="text-xl font-semibold xs-mx:text-lg">Recommended Jobs</div>
-        
-        {/* Sort component that will handle sorting */}
         <Sort 
           sort="job" 
           onFilterClick={() => setFilterDrawerOpen(true)} 
           showFilterIcon={true} 
         />
       </div>
-      
+
       <div className="flex flex-wrap justify-center gap-10 mt-5">
-        {jobList.length > 0 ? (
-          filteredJobs.map((job:any, index:any) => {
-            if (!job || typeof job !== 'object') return null; // Skip invalid job objects
-            return <JobCard key={index} {...job} />;
-          })
+        {isLoading ? (
+          <div>Loading jobs...</div>
+        ) : filteredJobs.length > 0 ? (
+          filteredJobs.map((job, index) => (
+            <JobCard key={`${job.id}-${index}`} {...job} />
+          ))
         ) : (
-          <div>No jobs available.</div>
+          <div>No jobs available matching your criteria.</div>
         )}
       </div>
-      
-      {/* Mobile Filter Drawer */}
+
       <Drawer
         opened={filterDrawerOpen}
         onClose={() => setFilterDrawerOpen(false)}
@@ -121,7 +174,7 @@ function Jobs() {
         position="right"
         title="Filters"
       >
-        <FilterComponent />
+        <SearchBar />
       </Drawer>
     </div>
   );

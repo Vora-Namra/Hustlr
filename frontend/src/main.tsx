@@ -4,11 +4,14 @@ import './index.css'
 import App from './App.tsx'
 import "@mantine/core/styles.css";
 import "@mantine/carousel/styles.css";
+import { BrowserRouter } from 'react-router-dom';
 
 
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
+    <BrowserRouter>
     <App />
+    </BrowserRouter>
   </StrictMode>,
 )

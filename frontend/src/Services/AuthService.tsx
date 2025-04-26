@@ -1,5 +1,6 @@
 
 import axios from 'axios';
+import { removeUser } from '../Slices/UserSlice';
 
 const base_url = "http://localhost:8080/auth/";
 
@@ -14,6 +15,7 @@ const loginUser = async (login: any) => {
   
  export const navigateToLogin=(navigate:any)=>{
     localStorage.removeItem('token');
+    removeUser();
     localStorage.removeItem('user');
     navigate("/login");
   }

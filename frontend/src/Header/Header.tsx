@@ -1,123 +1,165 @@
+// src/Header/Header.tsx
+import React, { useEffect, useState } from 'react';
+import { IconAsset, IconMenu2 } from "@tabler/icons-react";
+import { Avatar, Button, Drawer } from '@mantine/core';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import {jwtDecode} from 'jwt-decode';
+import { getProfile } from '../Services/ProfileService';
 
-import React, { useEffect, useState } from 'react'
-import { IconAsset, IconBell, IconMenu2 } from "@tabler/icons-react"
-import { Avatar, Burger, Button, Drawer, Indicator } from '@mantine/core'
-import NavLinks from './NavLinks'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { ProfileMenu } from './ProfileMenu'
-import { useDispatch, useSelector } from 'react-redux'
-import { getProfile } from '../Services/ProfileService'
-import { setProfile } from '../Slices/ProfileSlice'
-import NotificationMenu from './NotificationMenu'
-import { jwtDecode } from 'jwt-decode'
-import { setUser } from '../Slices/UserSlice'
-import { setupResponseInterceptor } from '../Interceptor/AuthInterceptor'
-import { useDisclosure } from '@mantine/hooks'
+import NavLinks from './NavLinks';
+import { ProfileMenu } from './ProfileMenu';
+import NotificationMenu from './NotificationMenu';
 
-function Header() {
-  // const [opened, {open,close}] = useDisclosure(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+import axiosInstance, { setupResponseInterceptor } from '../Interceptor/AuthInterceptor';
+import { setUser, removeUser } from '../Slices/UserSlice';
+import { setJwt, removeJwt } from '../Slices/JwtSlice';
+import { setProfile } from '../Slices/ProfileSlice';
+
+interface DecodedToken {
+  sub: string;
+  id: string;
+  name: string;
+  profileId?: string;
+  role: string;
+  exp: number;
+  iat: number;
+}
+
+const Header: React.FC = () => {
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const location = useLocation();
-  const user = useSelector((state: any) => state.user);
-  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const token = useSelector((state:any)=>state.jwt);
-  useEffect(()=>{
-    setupResponseInterceptor(navigate,dispatch);
-    
-  },[navigate])
+  const dispatch = useDispatch();
 
+  const token = useSelector((state: any) => state.jwt) as string;
+
+  // 1️⃣ Setup 401 interceptor once
   useEffect(() => {
-    if(token != ""){
-      const decoded = jwtDecode(localStorage.getItem("token")||"");
-      dispatch(setUser({...decoded,email:decoded.sub}));
-    }
-    if (user && user.profileId) {
-      getProfile(user.profileId)
-        .then((res) => {
-          dispatch(setProfile(res));
-        })
-        .catch((err) => { throw err });
-    }
-  }, [token,navigate])
+    setupResponseInterceptor({dispatch, navigate});
+  }, [dispatch, navigate]);
 
-  if (location.pathname === "/signup" || location.pathname === "/login") {
-    return <div></div>;
+  // 2️⃣ Decode token and fetch profile
+  useEffect(() => {
+    if (token) {
+      try {
+        const decoded = jwtDecode<DecodedToken>(token);
+        dispatch(setUser({
+          id: decoded.id,
+          name: decoded.name,
+          email: decoded.sub,
+          role: decoded.role,
+          profileId: decoded.profileId,
+        }));
+
+        if (decoded.profileId) {
+          getProfile(decoded.profileId)
+            .then(profile => {
+              if (profile) {
+                dispatch(setProfile(profile));
+              } else {
+                console.log('Profile not found - redirecting to create profile');
+                navigate('/create-profile');
+              }
+            })
+            .catch(err => {
+              if (err.response?.status === 404) {
+                console.log('Profile not found');
+              } else {
+                console.error('Profile fetch error:', err);
+              }
+            });
+        }
+      } catch (err) {
+        console.error('Error decoding token:', err);
+        dispatch(removeUser());
+        dispatch(removeJwt());
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        navigate('/login', { replace: true });
+      }
+    }
+  }, [token, dispatch, navigate]);
+
+  // 3️⃣ Logout handler
+  const handleLogout = () => {
+    dispatch(removeUser());
+    dispatch(removeJwt());
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    navigate('/login', { replace: true });
+  };
+
+  // 4️⃣ Hide header on auth pages
+  if (['/login', '/signup'].includes(location.pathname)) {
+    return null;
   }
- return (
-    <div className='w-full bg-mine-shaft-950 px-3 md:px-6 text-white flex justify-between h-20 items-center'>
-      {/* Logo Section */}
-      <div className='flex gap-2 items-center text-bright-sun-400 ml-2 md:ml-6'>
-        <IconAsset className='h-8 w-8 md:h-12 md:w-12' stroke={2} />
-        <div className=' xs-mx:hidden text-2xl font-semibold'>Hustlr</div>
-      </div>
 
-      {/* Desktop Navigation */}
-      <div className='hidden bs:block'>
+  const isLoggedIn = Boolean(token);
+
+  return (
+    <header className='w-full bg-gray-900 px-4 md:px-8 text-white flex items-center h-20'>
+      {/* Logo */}
+      <Link to='/' className='flex items-center gap-2'>
+        <IconAsset className='h-8 w-8 text-yellow-400' stroke={2} />
+        <span className='text-2xl font-semibold'>Hustlr</span>
+      </Link>
+
+      {/* Desktop nav */}
+      <nav className='hidden md:flex flex-1 justify-center'>
         <NavLinks />
-      </div>
+      </nav>
 
-      {/* Right Section */}
-      <div className='flex gap-4 md:gap-8 items-center justify-between mr-2 md:mr-6'>
-        {user ? (
-          <div >
-            <ProfileMenu />
-          </div>
+      {/* Right side */}
+      <div className='flex items-center gap-4 ml-auto'>
+        {isLoggedIn ? (
+          <>
+            <NotificationMenu />
+            <div className='hidden md:block'>
+              <ProfileMenu onLogout={handleLogout} />
+            </div>
+          </>
         ) : (
-          <Link to="/login">
-            <div className='hidden xs-mx:block'>
-            <Button variant='subtle' color='brightSun.4' size='sm' className='hidden xs-mx:block'>
+          <Link to='/login'>
+            <Button variant='subtle' color='yellow' size='sm'>
               Login
             </Button>
-            </div>
           </Link>
         )}
-        {user?<NotificationMenu/>:<></>}
-        {/* <div className='bg-mine-shaft-900 p-1.5 rounded-full'>
-          <Indicator color="brightSun.4" size={8} offset={6} processing>
-            <IconBell stroke={1.5} className='h-5 w-5 md:h-6 md:w-6' />
-          </Indicator>
-        </div> */}
 
-
-
-        {/* Mobile Menu Button */}
-        <div className='bs:hidden'>
+        {/* Mobile menu toggle */}
         <Button
           variant='subtle'
-          onClick={() => setMobileMenuOpen(true)}
+          className='md:hidden'
+          onClick={() => setDrawerOpen(true)}
         >
           <IconMenu2 className='h-6 w-6' />
         </Button>
-        </div>
-        
       </div>
 
-      {/* { <Burger opened={opened} onClick={open} aria-label="Toggle menu" /> } */}
-
-      {/* Mobile Menu Drawer */}
+      {/* Mobile drawer */}
       <Drawer
-        opened={mobileMenuOpen}
-        onClose={() => setMobileMenuOpen(false)}
+        opened={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
         size="xs"
         position="right"
         title="Menu"
       >
-        <div className='flex flex-col gap-4'>
+        {isLoggedIn ? (
           <div className='mb-4'>
-            {user ? <ProfileMenu /> : (
-              <Link to="/login">
-                <Button variant='subtle' color='brightSun.4' fullWidth>
-                  Login
-                </Button>
-              </Link>
-            )}
+            <ProfileMenu onLogout={handleLogout} />
           </div>
-          <NavLinks isMobile={true} onClose={() => setMobileMenuOpen(false)} />
-        </div>
+        ) : (
+          <Link to="/login">
+            <Button variant='subtle' color='yellow' fullWidth>
+              Login
+            </Button>
+          </Link>
+        )}
+        <NavLinks isMobile onClose={() => setDrawerOpen(false)} />
       </Drawer>
-    </div>
- )
-}
+    </header>
+  );
+};
 
-export default Header
+export default Header;

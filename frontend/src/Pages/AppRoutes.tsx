@@ -1,4 +1,4 @@
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes, useNavigate } from 'react-router-dom';
 import FindJobs from './FindJobs';
 import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
@@ -25,20 +25,28 @@ const AppRoutes = () => {
   const user = useSelector((state: any) => state.user);
   const profile = useSelector((state: any) => state.profile);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   // On app initialization (or after login), if user has a profileId and profile is empty, fetch profile.
   useEffect(() => {
     if (user?.profileId && (!profile || !profile.id)) {
       getProfile(user.profileId)
         .then((data) => {
-          dispatch(setProfile(data));
+          if (data) {
+            dispatch(setProfile(data));
+          } else {
+            console.log('Profile not found - redirecting to create profile');
+            navigate('/create-profile');
+          }
         })
-        .catch((err) => console.error("Failed to load profile:", err));
+        .catch((err) => {
+          if (err.response?.status !== 404) { // Only log non-404 errors
+            console.error("Failed to load profile:", err);
+          }
+        });
     }
-  }, [user, profile, dispatch]);
-
+  }, [user, profile, dispatch, navigate]);
   return (
-    <BrowserRouter>
       <div className='relative'>
         <Header />
         <Divider size="xs" color="mineShaft.7" />
@@ -59,7 +67,6 @@ const AppRoutes = () => {
         </Routes> 
         <Footer />
       </div>
-    </BrowserRouter>
   );
 };
 
