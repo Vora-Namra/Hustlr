@@ -54,13 +54,13 @@ npm start
 
 
 ADDED SCREENSHOTS -
-![Home Page1](https://raw.githubusercontent.com/Vora-Namra/Hustlr/main/home1.png)
-![Home Page2](https://raw.githubusercontent.com/Vora-Namra/Hustlr/main/home2.png)
-![Home Page3](https://raw.githubusercontent.com/Vora-Namra/Hustlr/main/home3.png)
+![Home Page1](https://github.com/Vora-Namra/Hustlr/blob/main/home1.png?raw=true)
+![Home Page2](https://github.com/Vora-Namra/Hustlr/blob/main/home2.png?raw=true)
+![Home Page3](https://github.com/Vora-Namra/Hustlr/blob/main/home3.png?raw=true)
 ![Login Page](https://raw.githubusercontent.com/Vora-Namra/Hustlr/main/loginpage.png)
-![Find Jobs](https://raw.githubusercontent.com/Vora-Namra/Hustlr/main/findjobs.png)
-![Find Talents](https://raw.githubusercontent.com/Vora-Namra/Hustlr/main/findtalents.png)
-![Post Jobs](https://raw.githubusercontent.com/Vora-Namra/Hustlr/main/postjobs.png)
-![Posted Jobs](https://raw.githubusercontent.com/Vora-Namra/Hustlr/main/postedjobs.png)
-![Jobs History](https://raw.githubusercontent.com/Vora-Namra/Hustlr/main/jobhistory.png)
+![Find Jobs](https://github.com/Vora-Namra/Hustlr/blob/main/findjobs.png?raw=true)
+![Find Talents](https://github.com/Vora-Namra/Hustlr/blob/main/findtalents.png?raw=true)
+![Post Jobs](https://github.com/Vora-Namra/Hustlr/blob/main/postjobs.png?raw=true)
+![Posted Jobs](https://github.com/Vora-Namra/Hustlr/blob/main/postedjobs.png?raw=true)
+![Jobs History](https://github.com/Vora-Namra/Hustlr/blob/main/jobhistory.png?raw=true)
 
