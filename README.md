@@ -54,13 +54,13 @@ npm start
 
 
 ADDED SCREENSHOTS -
-![Home Page1](./screenshots/home1.png)
-![Home Page2](./screenshots/home2.png)
-![Home Page3](./screenshots/home3.png)
-![Login Page](./screenshots/login.png)
-![Find Jobs](./screenshots/findjobs.png)
-![Find Talents](./screenshots/findtalents.png)
-![Post Jobs](./screenshots/postjobs.png)
-![Posted Jobs](./screenshots/postedjobs.png)
-![Jobs History](./screenshots/jobhistory.png)
+![Home Page1](./home1.png)
+![Home Page2](./home2.png)
+![Home Page3](./home3.png)
+![Login Page](./loginpage.png)
+![Find Jobs](./findjobs.png)
+![Find Talents](./findtalents.png)
+![Post Jobs](./postjobs.png)
+![Posted Jobs](./postedjobs.png)
+![Jobs History](./jobhistory.png)
 
