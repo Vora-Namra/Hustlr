@@ -54,13 +54,13 @@ npm start
 
 
 ADDED SCREENSHOTS -
-![Home Page1](./home1.png)
-![Home Page2](./home2.png)
-![Home Page3](./home3.png)
-![Login Page](./loginpage.png)
-![Find Jobs](./findjobs.png)
-![Find Talents](./findtalents.png)
-![Post Jobs](./postjobs.png)
-![Posted Jobs](./postedjobs.png)
-![Jobs History](./jobhistory.png)
+![Home Page1](https://raw.githubusercontent.com/Vora-Namra/Hustlr/main/home1.png)
+![Home Page2](https://raw.githubusercontent.com/Vora-Namra/Hustlr/main/home2.png)
+![Home Page3](https://raw.githubusercontent.com/Vora-Namra/Hustlr/main/home3.png)
+![Login Page](https://raw.githubusercontent.com/Vora-Namra/Hustlr/main/loginpage.png)
+![Find Jobs](https://raw.githubusercontent.com/Vora-Namra/Hustlr/main/findjobs.png)
+![Find Talents](https://raw.githubusercontent.com/Vora-Namra/Hustlr/main/findtalents.png)
+![Post Jobs](https://raw.githubusercontent.com/Vora-Namra/Hustlr/main/postjobs.png)
+![Posted Jobs](https://raw.githubusercontent.com/Vora-Namra/Hustlr/main/postedjobs.png)
+![Jobs History](https://raw.githubusercontent.com/Vora-Namra/Hustlr/main/jobhistory.png)
 
