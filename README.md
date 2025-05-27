@@ -51,16 +51,27 @@ Hustlr is a full-stack job portal web application designed to connect **job seek
 cd hustlr-frontend
 npm install
 npm start
+```
 
 
-ADDED SCREENSHOTS -
+
+### ADDED SCREENSHOTS -
 ![Home Page1](https://github.com/Vora-Namra/Hustlr/blob/main/home1.png?raw=true)
 ![Home Page2](https://github.com/Vora-Namra/Hustlr/blob/main/home2.png?raw=true)
 ![Home Page3](https://github.com/Vora-Namra/Hustlr/blob/main/home3.png?raw=true)
 ![Login Page](https://raw.githubusercontent.com/Vora-Namra/Hustlr/main/loginpage.png)
+
+### JOB SEEKERS-
 ![Find Jobs](https://github.com/Vora-Namra/Hustlr/blob/main/findjobs.png?raw=true)
+![Posted Jobs](https://github.com/Vora-Namra/Hustlr/blob/main/postedjobs.png?raw=true)
+![Company page](https://github.com/Vora-Namra/Hustlr/blob/main/companypage.png?raw=true)
+![Apply page](https://github.com/Vora-Namra/Hustlr/blob/main/applypage.png?raw=true)
+![Jobs History](https://github.com/Vora-Namra/Hustlr/blob/main/jobhistory.png?raw=true)
+![Saved Jobs](https://github.com/Vora-Namra/Hustlr/blob/main/savedjobs.png?raw=true)
+
+
+
+### JOB RECRUITERS-
 ![Find Talents](https://github.com/Vora-Namra/Hustlr/blob/main/findtalents.png?raw=true)
 ![Post Jobs](https://github.com/Vora-Namra/Hustlr/blob/main/postjobs.png?raw=true)
-![Posted Jobs](https://github.com/Vora-Namra/Hustlr/blob/main/postedjobs.png?raw=true)
-![Jobs History](https://github.com/Vora-Namra/Hustlr/blob/main/jobhistory.png?raw=true)
 
