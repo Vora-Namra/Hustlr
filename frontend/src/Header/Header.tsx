@@ -98,7 +98,7 @@ const Header: React.FC = () => {
   const isLoggedIn = Boolean(token);
 
   return (
-    <header className='w-full bg-gray-900 px-4 md:px-8 text-white flex items-center h-20'>
+    <header className='w-full bg-mine-shaft-950 px-4 md:px-8 text-white flex items-center h-20'>
       {/* Logo */}
       <Link to='/' className='flex items-center gap-2'>
         <IconAsset className='h-8 w-8 text-yellow-400' stroke={2} />

@@ -24,3 +24,4 @@ export const filterSlice = createSlice({
 
 export const { updateFilter, updateSalaryFilter, resetFilter } = filterSlice.actions;
 export default filterSlice.reducer;
+

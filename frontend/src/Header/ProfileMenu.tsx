@@ -45,7 +45,9 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({ onLogout }) => {
       <Menu.Target>
         <div className="flex cursor-pointer items-center gap-2">
           <div className="hidden sm:block text-sm md:text-base">
-            {user.name}
+            <div className="hidden sm:block text-sm md:text-base">
+  {user?.name || 'Guest'}
+</div>
           </div>
           <Avatar
             src={
